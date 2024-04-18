@@ -16,33 +16,7 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const loan = req.body;
 
-  try {
-    const clientsResponse = await axios.get(
-      "http://localhost:3000/api/v1/client"
-    );
-    const clients = clientsResponse.data;
-
-    for (const clt of clients) {
-      const emailData = {
-        to: clt.email,
-        subject: `${loan.title} available in our platform `,
-        text: loan.description,
-      };
-
-      const notificationResponse = await axios.post(
-        "http://localhost:3000/api/v1/sendNotification",
-        emailData
-      );
-      console.log("Response:", notificationResponse.data);
-    }
-
-    res.status(200).json({
-      message: "book added successfully and notifications sent to clients.",
-    });
-  } catch (error) {
-    console.error("Error adding add and sending notifications:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+  
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(400).json({ error: "Book id is not valid" });
 
@@ -80,6 +54,33 @@ router.post("/", async (req, res) => {
   try {
     const book = await Book.create(newBook);
     res.status(201).json(book);
+    try {
+      const clientsResponse = await axios.get(
+        "http://localhost:3000/api/v1/client"
+      );
+      const clients = clientsResponse.data;
+
+      for (const clt of clients) {
+        const emailData = {
+          to: clt.email,
+          subject: `${loan.title} available in our platform `,
+          text: loan.description,
+        };
+
+        const notificationResponse = await axios.post(
+          "http://localhost:3000/api/v1/sendNotification",
+          emailData
+        );
+        console.log("Response:", notificationResponse.data);
+      }
+
+      res.status(200).json({
+        message: "book added successfully and notifications sent to clients.",
+      });
+    } catch (error) {
+      console.error("Error adding add and sending notifications:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   } catch (error) {
     // Handle error
     res.status(500).json({ error: "Could not create book" });
