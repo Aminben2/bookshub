@@ -3,6 +3,20 @@ import ClientModel from "../model/client.js";
 import mongosse from "mongoose";
 const router = Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const clients = await ClientModel.find({});
+    if (!clients || clients.length === 0)
+      return res.status(404).json({ error: "No clients found" });
+    return res.status(200).json(clients);
+  } catch (error) {
+    console.error("Error fetching clients:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
 router.get("/:idClient", async (req, res) => {
   try {
     const clientId = req.params.idClient;
