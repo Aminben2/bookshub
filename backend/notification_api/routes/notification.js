@@ -2,10 +2,6 @@ import { Router } from "express";
 import nodemailer from "nodemailer";
 const router = Router();
 
-
-
-
-
 router.post("/", (req, res) => {
   const { recipients, subject, text } = req.body;
 
