@@ -46,11 +46,18 @@ router.post("/", async (req, res) => {
           text: book.description,
         };
 
-        const notificationResponse = await axios.post(
-          "http://localhost:3000/api/v1/sendNotification",
-          emailData
-        );
-        console.log("Response:", notificationResponse.data);
+        try {
+          await axios.post(
+            "http://localhost:3000/api/v1/sendNotification",
+            emailData
+          );
+          console.log(`Notification sent to ${clt.email}`);
+        } catch (error) {
+          console.error(
+            `Error sending notification to ${clt.email}:`,
+            error.message
+          );
+        }
       }
 
       res.status(200).json({
