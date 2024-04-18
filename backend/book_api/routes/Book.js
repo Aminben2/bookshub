@@ -42,8 +42,8 @@ router.post("/", async (req, res) => {
       for (const clt of clients) {
         const emailData = {
           to: clt.email,
-          subject: `${loan.title} available in our platform `,
-          text: loan.description,
+          subject: `${book.title} available in our platform `,
+          text: book.description,
         };
 
         const notificationResponse = await axios.post(
