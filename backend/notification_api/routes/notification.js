@@ -10,12 +10,13 @@ router.post("/", (req, res) => {
   const { recipients, subject, text } = req.body;
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port:587,
-    secure:false,
+    service : 'gmail',
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
-      user: "earline.mraz54@ethereal.email",
-      pass: "cRkjJ4y3aBy7xTSwEP",
+      user: "",//set your email asi amine
+      pass: "" //set your password application
     },
   });
 
