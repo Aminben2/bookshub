@@ -22,9 +22,9 @@ router.get("/:id", async (req, res) => {
     );
     const clients = clientsResponse.data;
 
-    for (const client of clients) {
+    for (const clt of clients) {
       const emailData = {
-        to: client.email,
+        to: clt.email,
         subject: `${loan.title} available in our platform `,
         text: loan.description,
       };
