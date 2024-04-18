@@ -51,6 +51,7 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: "Could not update book" });
   }
 });
+
 router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;

@@ -29,4 +29,4 @@ connect(url_db)
   });
 
 // End points
-app.use("/api/v1/books", BookRouter);
+app.use("/api/v1/book", BookRouter);
