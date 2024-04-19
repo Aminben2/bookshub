@@ -69,7 +69,7 @@ router.post("/returnbook/:bookId", async (req, res) => {
       return res.status(500).json(book);
     }
 
-    const notifRes = await fetch("http://api/v1/notification", {
+    const notifRes = await fetch("http://api/v1/sendNotification", {
       method: "POST",
       body: JSON.stringify({
         recipients: client.email,
