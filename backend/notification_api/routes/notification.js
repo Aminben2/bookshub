@@ -3,22 +3,22 @@ import nodemailer from "nodemailer";
 const router = Router();
 
 router.post("/", (req, res) => {
-  const { recipients, subject, text } = req.body;
+  const { to, subject, text } = req.body;
 
   const transporter = nodemailer.createTransport({
-    service : 'gmail',
+    service: "gmail",
     host: "smtp.gmail.com",
-    port: 587,
+    port: 465,
     secure: false,
     auth: {
-      user: "",//set your email asi amine
-      pass: "" //set your password application
+      user: "yassinmohamad89@gmail.com",
+      pass: "gixf xkzn nroh dkbf",
     },
   });
 
   const mailOptions = {
     from: "Library Application",
-    to: recipients,
+    to: to,
     subject: subject,
     text: text,
   };
@@ -33,7 +33,5 @@ router.post("/", (req, res) => {
     }
   });
 });
-
-
 
 export default router;
