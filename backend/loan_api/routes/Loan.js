@@ -59,13 +59,7 @@ router.post("/returnbook/:bookId", async (req, res) => {
   const { bookId, clientId } = req.params;
   try {
     const loan = await Loan.deleteOne({ clientId, bookId });
-    const clientRes = await fetch(
-      "http://localhost:3000/api/v1/client/" + clientId
-    );
-    const client = await clientRes.json();
-    if (!clientRes.ok) {
-      return res.status(500).json(client);
-    }
+    const failedLoans = await FailedLoans.find({ bookId });
 
     const bookRes = await fetch("http://localhost:3002/api/v1/book/" + bookId);
     const book = await bookRes.json();
@@ -73,18 +67,29 @@ router.post("/returnbook/:bookId", async (req, res) => {
       return res.status(500).json(book);
     }
 
-    const notifRes = await fetch(
-      "http://localhost:3001/api/v1/sendNotification",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          recipients: client.email,
-          subject: `Great news`,
-          text: `The book ${book.title} is avaible agin`,
-        }),
+    for (let index = 0; index < failedLoans.length; index++) {
+      const element = failedLoans[index];
+      const clientRes = await fetch(
+        "http://localhost:3000/api/v1/client/" + element.clientId
+      );
+      const client = await clientRes.json();
+      if (!clientRes.ok) {
+        return res.status(500).json(client);
       }
-    );
-    const noti = await notifRes.json();
+      const notifRes = await fetch(
+        "http://localhost:3001/api/v1/sendNotification",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            recipients: client.email,
+            subject: `Great news`,
+            text: `The book ${book.title} is avaible agin`,
+          }),
+        }
+      );
+      const noti = await notifRes.json();
+    }
+
     return res.status(200).json({ message: "Book is returned..." });
   } catch (error) {
     return res.status(500).json({ error });
