@@ -4,13 +4,13 @@ import Loan from "../models/Loan.js";
 import FailedLoans from "../models/FailedLoans.js";
 const router = Router();
 
-router.get("/returnLoans/:clientId", async (req, res) => {
+router.get("/:clientId", async (req, res) => {
   const { clientId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(clientId))
     return res.status(400).json({ error: "Client id is not valid" });
-
-  const loans = await Loan.find({ clientId });
-  if (!loans) res.status(500).json({ error: "Client loans not found" });
+  const loans = await Loan.find({ clientId: clientId });
+  if (loans.length == 0)
+    return res.status(500).json({ error: "Client loans not found " });
   return res.status(200).json(loans);
 });
 
@@ -32,7 +32,7 @@ router.post("/addloan", async (req, res) => {
       .json({ error: "Book is already loaned wait for updates" });
   }
 
-  const bookRes = await fetch("http://api/v1/book/" + bookId);
+  const bookRes = await fetch("http://localhost:3002/api/v1/book/" + bookId);
   if (!bookRes.ok)
     return res
       .status(500)
@@ -40,7 +40,9 @@ router.post("/addloan", async (req, res) => {
   const book = await bookRes.json();
   if (!book) res.status(500).json({ error: "Book not found" });
 
-  const clientRes = await fetch("http://api/v1/client/" + clientId);
+  const clientRes = await fetch(
+    "http://localhost:3000/api/v1/client/" + clientId
+  );
   if (!clientRes.ok)
     return res
       .status(500)
@@ -57,26 +59,31 @@ router.post("/returnbook/:bookId", async (req, res) => {
   const { bookId, clientId } = req.params;
   try {
     const loan = await Loan.deleteOne({ clientId, bookId });
-    const clientRes = await fetch("http://api/v1/client/" + clientId);
+    const clientRes = await fetch(
+      "http://localhost:3000/api/v1/client/" + clientId
+    );
     const client = await clientRes.json();
     if (!clientRes.ok) {
       return res.status(500).json(client);
     }
 
-    const bookRes = await fetch("http://api/v1/book/" + bookId);
+    const bookRes = await fetch("http://localhost:3002/api/v1/book/" + bookId);
     const book = await bookRes.json();
     if (!bookRes.ok) {
       return res.status(500).json(book);
     }
 
-    const notifRes = await fetch("http://api/v1/sendNotification", {
-      method: "POST",
-      body: JSON.stringify({
-        recipients: client.email,
-        subject: `Great news`,
-        text: `The book ${book.title} is avaible agin`,
-      }),
-    });
+    const notifRes = await fetch(
+      "http://localhost:3001/api/v1/sendNotification",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          recipients: client.email,
+          subject: `Great news`,
+          text: `The book ${book.title} is avaible agin`,
+        }),
+      }
+    );
     const noti = await notifRes.json();
     return res.status(200).json({ message: "Book is returned..." });
   } catch (error) {
