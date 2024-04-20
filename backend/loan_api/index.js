@@ -15,18 +15,16 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 const url_db = process.env.DB_URL;
 
-// Database Connection
 connect(url_db)
   .then(() => {
-    console.log("Connected to db");
+    console.log("Connected to Mongodb");
     app.listen(port, (err) => {
-      if (err) console.log("Failed to start the server");
+      if (err) console.log("Server not started");
       else console.log("Server started");
     });
   })
   .catch((err) => {
-    if (err) console.log(err);
+    console.log("Not Connected to Mongodb");
   });
 
-// End points
 app.use("/api/v1/loan", LoanRouter);

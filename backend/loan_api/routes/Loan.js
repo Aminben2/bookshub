@@ -4,16 +4,21 @@ import Loan from "../models/Loan.js";
 import FailedLoans from "../models/FailedLoans.js";
 const router = Router();
 
+
 router.get("/returnLoans/:clientId", async (req, res) => {
-  const { clientId } = req.params;
+  const clientId = req.params.clientId;
   if (!mongoose.Types.ObjectId.isValid(clientId))
     return res.status(400).json({ error: "Client id is not valid" });
-
-  const loans = await Loan.find({ clientId });
-  if (!loans) res.status(500).json({ error: "Client loans not found" });
-  return res.status(200).json(loans);
+  try {
+    const loans = await Loan.find({ clientId });
+    if (!loans || loans.length === 0)
+      return res.status(404).json({ error: "Client loans not found" });
+    return res.status(200).json(loans);
+  } catch (error) {
+    console.log("error of returning client's loans :", error );
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
-
 router.post("/addloan", async (req, res) => {
   const { clientId, bookId } = req.body;
 
