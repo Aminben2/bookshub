@@ -4,6 +4,7 @@ import { switchTheme } from "../store/ModeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, Outlet } from "react-router-dom";
 import Header from "../partials/Header/Header";
+import Footer from "../partials/Footer/Footer";
 
 function RootLayout() {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ function RootLayout() {
     >
       <Header isDarkMOde={isDarkMOde} user={user} />
       <Outlet />
+      <Footer />
     </div>
   );
 }
