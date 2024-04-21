@@ -25,6 +25,5 @@ connect(url)
     console.log("Not Connected to Mongodb");
   });
 
-  
-app.use(requireAuth);
+// app.use(requireAuth);
 app.use("/api/v1/client", routerClient);

@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 
 function Header() {
   return (
-    <header className="border-b bg-white font-sans min-h-[60px] px-10 py-3 relative tracking-wide relative z-50">
+    <header className="border-b bg-white font-sans min-h-[60px] px-10 py-3 relative tracking-wide  z-50">
       <div className="flex flex-wrap items-center max-lg:gap-y-6 max-sm:gap-x-4">
         <Link to="/">
           <img
-            // src="https://readymadeui.com/readymadeui.svg"
             src="./images/logo.png"
             alt="logo"
             className="w-36"
@@ -154,7 +153,7 @@ function Header() {
         <div className="flex flex-row gap-1 ml-3">
           <Link
             to="/login"
-            class="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
+            className="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
           >
             Login
           </Link>

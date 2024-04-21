@@ -103,7 +103,7 @@ function Signup() {
                     Last name
                   </label>
                   <input
-                    name="LastName"
+                    name="lastName"
                     type="text"
                     className="bg-gray-100 w-full text-sm px-4 py-4 focus:bg-transparent outline-blue-500 transition-all"
                     placeholder="Enter name"
@@ -164,7 +164,7 @@ function Signup() {
                   />
                 </div>
               </div>
-              <div classNameName="flex -mx-3">
+              <div className="flex mt-2 -mx-3">
                 {error && (
                   <div
                     className="flex w-full bg-red-100 dark:bg-red-200 rounded-lg p-4 mx-3 mb-4 text-sm text-red-700"
@@ -177,9 +177,9 @@ function Signup() {
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       ></path>
                     </svg>
                     <div>
@@ -188,11 +188,11 @@ function Signup() {
                   </div>
                 )}
               </div>
-              <div className="mt-10">
+              <div className="mt-3">
                 {isLoading ? (
                   <button
                     type="submit"
-                    className="px-6 py-2.5 rounded text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
+                    className="py-4 px-6 rounded text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-500 hover:bg-blue-600 active:bg-blue-500"
                   >
                     Loading
                     <svg

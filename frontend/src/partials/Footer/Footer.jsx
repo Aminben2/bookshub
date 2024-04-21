@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="bg-[#f0fff0] bg-white py-12 px-12 font-[sans-serif]">
+    <footer className="bg-white py-12 px-12 font-[sans-serif]">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
         <div className="xl:col-span-2">
           <a href="">
@@ -17,10 +17,7 @@ function Footer() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
             gravida, mi eu pulvinar cursus, sem elit interdum mauris dipiscing
             elit. Aenean gravida, mi eu pulvinar cursus...{" "}
-            <a
-              href=""
-              className="text-sm font-semibold text-blue-500"
-            >
+            <a href="" className="text-sm font-semibold text-blue-500">
               Read more
             </a>
           </p>
@@ -40,10 +37,7 @@ function Footer() {
                   />
                 </svg>
               </div>
-              <a
-                href=""
-                className="text-blue-500 text-sm ml-3"
-              >
+              <a href="" className="text-blue-500 text-sm ml-3">
                 <small className="block">Tel</small>
                 <strong>180-548-2588</strong>
               </a>
@@ -63,10 +57,7 @@ function Footer() {
                   />
                 </svg>
               </div>
-              <a
-                href=""
-                className="text-blue-500 text-sm ml-3"
-              >
+              <a href="" className="text-blue-500 text-sm ml-3">
                 <small className="block">Mail</small>
                 <strong>info@example.com</strong>
               </a>
@@ -90,10 +81,7 @@ function Footer() {
                   />
                 </svg>
               </div>
-              <a
-                href=""
-                className="text-blue-500 text-sm ml-3"
-              >
+              <a href="" className="text-blue-500 text-sm ml-3">
                 <small className="block">Address</small>
                 <strong>123 Main Street City, Country</strong>
               </a>
@@ -113,10 +101,7 @@ function Footer() {
                   />
                 </svg>
               </div>
-              <a
-                href=""
-                className="text-blue-500 text-sm ml-3"
-              >
+              <a href="" className="text-blue-500 text-sm ml-3">
                 <small className="block">Fax</small>
                 <strong>+1-548-2588</strong>
               </a>
@@ -246,26 +231,17 @@ function Footer() {
       <div className="lg:flex lg:item-center">
         <ul className="flex flex-wrap gap-4">
           <li>
-            <a
-              href=""
-              className="text-blue-500 text-sm hover:underline"
-            >
+            <a href="" className="text-blue-500 text-sm hover:underline">
               Terms of Service
             </a>
           </li>
           <li>
-            <a
-              href=""
-              className="text-blue-500 text-sm hover:underline"
-            >
+            <a href="" className="text-blue-500 text-sm hover:underline">
               Privacy Policy
             </a>
           </li>
           <li>
-            <a
-              href=""
-              className="text-blue-500 text-sm hover:underline"
-            >
+            <a href="" className="text-blue-500 text-sm hover:underline">
               Security
             </a>
           </li>

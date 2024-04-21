@@ -3,11 +3,11 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 
 const clientSchema = Schema({
-  nom: {
+  lastName: {
     type: String,
     required: true,
   },
-  prenom: {
+  firstName: {
     type: String,
     required: true,
   },
@@ -46,15 +46,15 @@ clientSchema.statics.login = async function (username, password) {
 clientSchema.statics.signup = async function (
   username,
   password,
-  prenom,
-  nom,
+  firstName,
+  lastName,
   email
 ) {
   const existUsername = await this.findOne({ username: username });
   const existEmail = await this.findOne({ email: email });
 
   // Validation
-  if (!username || !password || !prenom || !nom || !email) {
+  if (!username || !password || !firstName || !lastName || !email) {
     throw Error("All fields required");
   }
 
@@ -71,10 +71,10 @@ clientSchema.statics.signup = async function (
   if (!validator.isStrongPassword(password)) {
     throw Error("Weak Password");
   }
-  if (!validator.isAlpha(nom)) {
+  if (!validator.isAlpha(lastName)) {
     throw Error("Last name is invalid, Only characters");
   }
-  if (!validator.isAlpha(prenom)) {
+  if (!validator.isAlpha(firstName)) {
     throw Error("Fisrt name is invalid, Only characters");
   }
 
@@ -84,8 +84,8 @@ clientSchema.statics.signup = async function (
   const user = await this.create({
     username,
     password: hashedPasswod,
-    prenom,
-    nom,
+    firstName,
+    lastName,
     email,
   });
   return user;

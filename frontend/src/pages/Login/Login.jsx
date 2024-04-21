@@ -5,9 +5,8 @@ function Login() {
   return (
     <div class="font-[sans-serif] text-[#333] bg-white flex items-center justify-center md:h-screen p-4">
       <div class="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl rounded-md p-6">
-        <a href="javascript:void(0)">
+        <a href="">
           <img
-            // src="https://readymadeui.com/readymadeui.svg"
             src="./images/logo.png"
             alt="logo"
             class="w-40 md:mb-4 mb-12"
@@ -16,7 +15,7 @@ function Login() {
         <div class="grid md:grid-cols-2 items-center gap-8">
           <div class="max-md:order-1">
             <img
-              src="https://readymadeui.com/signin-image.webp"
+              src="./images/login-image.webp"
               class="lg:w-11/12 w-full object-cover"
               alt="login-image"
             />

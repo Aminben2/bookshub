@@ -26,14 +26,14 @@ const createToken = (_id) => {
 };
 
 router.post("/signup", async (req, res) => {
-  const { prenom, nom, username, password, email } = req.body;
+  const { firstName, lastName, username, password, email } = req.body;
 
   try {
     const client = await ClientModel.signup(
       username,
       password,
-      prenom,
-      nom,
+      firstName,
+      lastName,
       email
     );
 
