@@ -35,7 +35,6 @@ router.post("/", async (req, res) => {
 
   try {
     const book = await Book.create(newBook);
-    console.log(book  );
     const clientsResponse = await axios.get(
       "http://127.0.0.1:3000/api/v1/client"
     );

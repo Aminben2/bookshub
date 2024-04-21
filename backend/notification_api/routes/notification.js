@@ -12,7 +12,7 @@ router.post("/", (req, res) => {
     secure: false,
     auth: {
       user: "yassinmohamad89@gmail.com",
-      pass: "gixf xkzn nroh dkbf",
+      pass: "pdui ryzl lauf xxpw",
     },
   });
 
