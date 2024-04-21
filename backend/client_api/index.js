@@ -3,11 +3,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connect } from "mongoose";
 import routerClient from "./routes/client.js";
+import requireAuth from "./middleware/requireAuth.js";
 
 dotenv.config();
 const port = process.env.PORT || 3000;
 const url = process.env.URL_MONGOOSE;
-console.log(url);
 const app = express();
 
 app.use(express.json());
@@ -25,4 +25,6 @@ connect(url)
     console.log("Not Connected to Mongodb");
   });
 
+  
+app.use(requireAuth);
 app.use("/api/v1/client", routerClient);

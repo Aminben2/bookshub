@@ -1,7 +1,64 @@
 import { Router } from "express";
 import ClientModel from "../model/client.js";
-import mongosse from "mongoose";
+import JWT from "jsonwebtoken";
+
 const router = Router();
+
+// Token validation endpoint
+router.post("/validate-token", async (req, res) => {
+  const token = req.body.token;
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const user = await ClientModel.findById(decoded._id);
+    if (user) {
+      res.status(200).json({ valid: true, user });
+    } else {
+      res.status(401).json({ valid: false, message: "User not found" });
+    }
+  } catch (error) {
+    res.status(401).json({ valid: false, error: error.message });
+  }
+});
+
+// Create Token
+const createToken = (_id) => {
+  return JWT.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+};
+
+router.post("/signup", async (req, res) => {
+  const { prenom, nom, username, password, email } = req.body;
+
+  try {
+    const client = await ClientModel.signup(
+      username,
+      password,
+      prenom,
+      nom,
+      email
+    );
+
+    // create token for user
+    const token = createToken(client._id);
+    res.status(200).json({ _id: client._id, token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const client = await ClientModel.login(username, password);
+
+    // create token
+    const token = createToken(client._id);
+
+    res.status(200).json({ _id: client._id, token });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 router.get("/", async (req, res) => {
   try {
@@ -14,8 +71,6 @@ router.get("/", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 router.get("/:idClient", async (req, res) => {
   try {
@@ -53,7 +108,7 @@ router.put("/:idClient", async (req, res) => {
     if (!updatedClientdata)
       return res.status(404).json({ error: " body is emptyd" });
 
-    const existingClient = await ClientModel.findOne({_id : clientId});
+    const existingClient = await ClientModel.findOne({ _id: clientId });
     if (!existingClient)
       return res.status(404).json({ error: "client not found" });
 
@@ -70,10 +125,11 @@ router.delete("/:idClient", async (req, res) => {
   try {
     const clientId = req.params.idClient;
     const existingClient = await ClientModel.findByIdAndDelete(clientId);
-    if (!existingClient) return res.status(404).json({ error: "client not found" });
+    if (!existingClient)
+      return res.status(404).json({ error: "client not found" });
     return res.status(200).json({ message: "Client deleted successfully" });
   } catch (error) {
-        console.error("Error of deleting client:", error);
+    console.error("Error of deleting client:", error);
 
     return res.status(500).json({ error: "internal server error" });
   }

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 // Routes
 import BookRouter from "./routes/Book.js";
+import requireAuth from "./middleware/requireAuth.js";
 
 //Configs
 const app = express();
@@ -28,4 +29,5 @@ connect(url_db)
   });
 
 // End points
+app.use(requireAuth);
 app.use("/api/v1/book", BookRouter);
