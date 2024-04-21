@@ -68,7 +68,7 @@ const Home = () => {
             <h3 className="text-xl font-bold mb-2">Customization</h3>
             <p className="text-sm">Tailor our product to suit your needs.</p>
             <a
-              href="javascript:void(0);"
+              href=""
               className="text-blue-600 font-bold inline-block text-sm mt-2 hover:underline"
             >
               Learn more
@@ -91,7 +91,7 @@ const Home = () => {
               24/7 customer support for all your inquiries.
             </p>
             <a
-              href="javascript:void(0);"
+              href=""
               className="text-blue-600 font-bold inline-block text-sm mt-2 hover:underline"
             >
               Learn more
@@ -104,7 +104,7 @@ const Home = () => {
               className="w-12 mb-4 inline-block bg-blue-100 p-3 rounded-md"
               viewBox="0 0 24 24"
             >
-              <g fill-rule="evenodd" clip-rule="evenodd">
+              <g fillRule="evenodd" clipRule="evenodd">
                 <path
                   d="M17.03 8.97a.75.75 0 0 1 0 1.06l-4.2 4.2a.75.75 0 0 1-1.154-.114l-1.093-1.639L8.03 15.03a.75.75 0 0 1-1.06-1.06l3.2-3.2a.75.75 0 0 1 1.154.114l1.093 1.639L15.97 8.97a.75.75 0 0 1 1.06 0z"
                   data-original="#000000"
@@ -124,7 +124,7 @@ const Home = () => {
               Experience blazing-fast performance with our product.
             </p>
             <a
-              href="javascript:void(0);"
+              href=""
               className="text-blue-600 font-bold inline-block text-sm mt-2 hover:underline"
             >
               Learn more

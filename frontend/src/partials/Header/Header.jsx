@@ -1,16 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { logout } from "../../store/AuthSlice";
+import { useDispatch } from "react-redux";
 
-function Header() {
+function Header({ user, isDarkMOde }) {
+  const dispatch = useDispatch();
   return (
     <header className="border-b bg-white font-sans min-h-[60px] px-10 py-3 relative tracking-wide  z-50">
       <div className="flex flex-wrap items-center max-lg:gap-y-6 max-sm:gap-x-4">
         <Link to="/">
-          <img
-            src="./images/logo.png"
-            alt="logo"
-            className="w-36"
-          />
+          <img src="./images/logo.png" alt="logo" className="w-36" />
         </Link>
         <div
           id="collapseMenu"
@@ -151,12 +150,21 @@ function Header() {
           </button>
         </div>
         <div className="flex flex-row gap-1 ml-3">
-          <Link
-            to="/login"
-            className="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
-          >
-            Login
-          </Link>
+          {user ? (
+            <button
+              onClick={() => dispatch(logout())}
+              className="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-orange-600 hover:bg-orange-700 active:bg-orange-600"
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
 
