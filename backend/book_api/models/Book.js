@@ -19,6 +19,10 @@ const BookSchema = Schema({
     type: String,
     required: true,
   },
+  loaned: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export default model("book", BookSchema);

@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { logout } from "../../store/AuthSlice";
 import { useDispatch } from "react-redux";
+import SideBar from "../SideBar/SiseBar";
 
 function Header({ user, isDarkMOde }) {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const toggleSidebar = () => {
+    setShowMenu(!showMenu);
+    document.body.style.overflow = showMenu ? "auto" : "hidden";
+  };
   const dispatch = useDispatch();
   return (
     <header className="border-b bg-white font-sans min-h-[60px] px-10 py-3 relative tracking-wide  z-50">
+      {/* side bar */}
+      {showMenu && (
+        <div className="fixed lg:hidden inset-0 p-4 w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]">
+          <SideBar show={showMenu} setShow={() => toggleSidebar()} />
+        </div>
+      )}
       <div className="flex flex-wrap items-center max-lg:gap-y-6 max-sm:gap-x-4">
         <Link to="/">
           <img src="./images/logo.png" alt="logo" className="w-36" />
@@ -134,7 +147,7 @@ function Header({ user, isDarkMOde }) {
               data-original="#000000"
             ></path>
           </svg>
-          <button id="toggleOpen" className="lg:hidden">
+          <button id="toggleOpen" className="lg:hidden" onClick={toggleSidebar}>
             <svg
               className="w-7 h-7"
               fill="#000"
@@ -153,14 +166,14 @@ function Header({ user, isDarkMOde }) {
           {user ? (
             <button
               onClick={() => dispatch(logout())}
-              className="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-orange-600 hover:bg-orange-700 active:bg-orange-600"
+              className="px-6 py-2.5 hidden lg:block rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-orange-600 hover:bg-orange-700 active:bg-orange-600"
             >
               Log out
             </button>
           ) : (
             <Link
               to="/login"
-              className="px-6 py-2.5 rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
+              className="px-6 py-2.5 hidden lg:block rounded-full text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
             >
               Login
             </Link>

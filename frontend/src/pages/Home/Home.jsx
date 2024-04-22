@@ -3,7 +3,7 @@ import React from "react";
 const Home = () => {
   return (
     <div>
-      <div className="font-sans text-[#333] max-w-6xl max-md:max-w-md mx-auto my-5">
+      <div className="font-sans text-[#333] max-w-6xl max-md:max-w-md mx-auto my-5 px-8">
         <div className="grid md:grid-cols-2 items-center md:gap-8 gap-6">
           <div className="max-md:order-1 max-md:text-center z-50 relative">
             <h2 className="lg:text-6xl md:text-5xl text-3xl font-extrabold mb-4 md:!leading-[56px]">
@@ -41,11 +41,9 @@ const Home = () => {
           </div>
           <div className="lg:h-[550px] md:h-[550px] flex items-center relative -top-7 max-md:before:hidden before:absolute before:h-[120%] before:w-[120%] before:right-0 before:z-0">
             <img
-              // src="https://readymadeui.com/team-3.webp"
               src="./images/hero.jpg"
-              className="rounded-md w-full z-50 relative"
+              className="rounded-md w-full z-40 relative"
               alt="Dining Experience"
-              // lg:w-4/5
             />
           </div>
         </div>

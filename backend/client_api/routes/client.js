@@ -16,7 +16,7 @@ router.post("/validate-token", async (req, res) => {
       res.status(401).json({ valid: false, message: "User not found" });
     }
   } catch (error) {
-    res.status(401).json({ valid: false, error: error.message });
+    return res.status(401).json({ valid: false, error: error.message });
   }
 });
 
