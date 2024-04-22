@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { logout } from "../../store/AuthSlice";
 import { useDispatch } from "react-redux";
 
@@ -46,45 +46,45 @@ function Header({ user, isDarkMOde }) {
               </a>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
-              <a
-                href=""
+              <NavLink
+                to="/"
                 className="hover:text-[#007bff] text-[15px] text-[#007bff] block font-bold"
               >
                 Home
-              </a>
+              </NavLink>
             </li>
 
             <li className="group max-lg:border-b max-lg:py-3 relative">
-              <a
-                href=""
+              <NavLink
+                to="/books"
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] lg:hover:fill-[#007bff] block"
               >
                 Books
-              </a>
+              </NavLink>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
-              <a
-                href=""
+              <NavLink
+                to="/loan"
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
               >
                 Loan
-              </a>
+              </NavLink>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
-              <a
-                href=""
+              <NavLink
+                to="/returnBook"
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
               >
                 Return Book
-              </a>
+              </NavLink>
             </li>
             <li className="max-lg:border-b max-lg:py-3">
-              <a
-                href=""
+              <NavLink
+                to="/contact"
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
               >
                 Contact
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function NotFound() {
   return (
@@ -30,7 +31,7 @@ function NotFound() {
               clip-rule="evenodd"
             ></path>
           </svg>
-          <span>Return Home</span>
+          <Link to="/">Return Home</Link>
         </a>
       </div>
       <div className="w-1/2 lg:h-full flex lg:items-end justify-center p-4">

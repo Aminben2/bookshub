@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 // Routes
 import BookRouter from "./routes/Book.js";
@@ -27,6 +30,42 @@ connect(url_db)
   .catch((err) => {
     console.log("Not Connected to Mongodb");
   });
+
+// Upload logic :
+
+// Determine the current module's directory using import.meta.url
+const currentModuleDir = path.dirname(new URL(import.meta.url).pathname);
+
+// Use the current module's directory to construct the uploads directory path
+const uploadsDirectory = path.join(currentModuleDir, "uploads");
+
+// Create the "uploads" directory if it doesn't exist
+if (!fs.existsSync(uploadsDirectory)) {
+  fs.mkdirSync(uploadsDirectory);
+}
+
+// Set up Multer to handle file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDirectory); // Set the destination folder for uploaded files
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// Endpoint for multiple file uploads
+app.post("/upload", upload.array("files", 10), (req, res) => {
+  // You can access the file information through req.files
+  // Perform any necessary processing or validation here
+  const filenames = req.files.map((file) => file.filename);
+  res.status(200).json({ url: filenames });
+});
 
 // End points
 app.use(requireAuth);
