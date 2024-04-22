@@ -68,5 +68,5 @@ app.post("/upload", upload.array("files", 10), (req, res) => {
 });
 
 // End points
-app.use(requireAuth);
+// app.use(requireAuth);
 app.use("/api/v1/book", BookRouter);

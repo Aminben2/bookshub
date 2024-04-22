@@ -51,6 +51,9 @@ router.post("/addloan", async (req, res) => {
   const client = await clientRes.json();
   if (!client) res.status(500).json({ error: "Client not found" });
 
+  // const bookUpdate = await Book
+
+  
   const loan = await Loan.create(req.body);
   if (!loan) res.status(500).json({ error: "Could not create loan" });
   return res.status(200).json(loan);

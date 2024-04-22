@@ -2,6 +2,7 @@ import { Router } from "express";
 import Book from "../models/Book.js";
 import mongoose from "mongoose";
 import axios from "axios";
+import requireAuth from "../middleware/requireAuth.js";
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -26,7 +27,7 @@ router.get("/:id", async (req, res) => {
   return res.status(200).json(book);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   const newBook = req.body;
 
   if (!newBook) {
@@ -75,7 +76,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const updatedBook = req.body;
@@ -90,7 +91,32 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.put("/toggleLoaned/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(500).json({ error: "Book id is not valid" });
+    // Find the book by ID
+    const book = await Book.findById(id);
+    if (!book) {
+      return res.status(500).json({ error: "Book not found" });
+    }
+    // Toggle the 'loaned' field
+    book.loaned = !book.loaned;
+
+    // Save the updated book
+    await book.save();
+
+    return res.status(200).json(book);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: `Error toggling loaned field: ${error}` });
+  }
+});
+
+router.delete("/:id", requireAuth, async (req, res) => {
   try {
     const id = req.params.id;
 

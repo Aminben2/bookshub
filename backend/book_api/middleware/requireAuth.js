@@ -11,7 +11,7 @@ const requireAuth = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/v1/validate-token",
+      "http://localhost:3000/api/v1/client/validate-token",
       { token }
     );
     if (response.data.valid) {
@@ -22,7 +22,7 @@ const requireAuth = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error });
   }
 };
 
