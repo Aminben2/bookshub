@@ -1,19 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { logout } from "../../store/AuthSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SideBar from "../SideBar/SiseBar";
+import ClientLoans from "../../pages/ClientLoans/ClientLoans";
+import { getClientLoans } from "../../store/LoanSlice";
 
 function Header({ user, isDarkMOde }) {
   const [showMenu, setShowMenu] = useState(false);
+  const [showLoansModal, setShowLoansModal] = useState(false);
+  const dispatch = useDispatch();
+
+  const { clientLoans } = useSelector((state) => state.loan);
+  useEffect(() => {
+    dispatch(getClientLoans());
+  }, []);
 
   const toggleSidebar = () => {
     setShowMenu(!showMenu);
     document.body.style.overflow = showMenu ? "auto" : "hidden";
   };
-  const dispatch = useDispatch();
+
+  const toggleLoansModal = () => {
+    setShowLoansModal(!showLoansModal);
+    document.body.style.overflow = showLoansModal ? "auto" : "hidden";
+  };
+
   return (
     <header className="border-b bg-white font-sans min-h-[60px] px-10 py-3 relative tracking-wide  z-50">
+      {/* client loans modal  */}
+      {showLoansModal && (
+        <div className="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]">
+          <ClientLoans
+            show={showLoansModal}
+            setShow={() => toggleLoansModal()}
+          />
+        </div>
+      )}
       {/* side bar */}
       {showMenu && (
         <div className="fixed lg:hidden inset-0 p-4 w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]">
@@ -119,7 +142,7 @@ function Header({ user, isDarkMOde }) {
               0
             </span>
           </span>
-          <span className="relative">
+          <span className="relative" onClick={toggleLoansModal}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20px"
@@ -133,7 +156,7 @@ function Header({ user, isDarkMOde }) {
               ></path>
             </svg>
             <span className="absolute left-auto -ml-1 -top-1 rounded-full bg-red-500 px-1 py-0 text-xs text-white">
-              4
+              {clientLoans.length}
             </span>
           </span>
           <svg

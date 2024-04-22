@@ -8,12 +8,12 @@ const router = Router();
 router.post("/validate-token", async (req, res) => {
   const token = req.body.token;
   try {
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = JWT.verify(token, process.env.SECRET);
     const user = await ClientModel.findById(decoded._id);
     if (user) {
-      res.status(200).json({ valid: true, user });
+      return res.status(200).json({ valid: true, user });
     } else {
-      res.status(401).json({ valid: false, message: "User not found" });
+      return res.status(401).json({ valid: false, message: "User not found" });
     }
   } catch (error) {
     return res.status(401).json({ valid: false, error: error.message });
@@ -79,7 +79,6 @@ router.get("/:idClient", async (req, res) => {
     if (!client) return res.status(404).json({ error: "client not found" });
     return res.status(200).json(client);
   } catch (error) {
-    console.error("Error creating client:", error);
     return res.status(500).json({ error: " find internal server error" });
   }
 });

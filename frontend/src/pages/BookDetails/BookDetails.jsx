@@ -101,15 +101,15 @@ function BookDetails() {
             <div className="flex flex-wrap gap-4 mt-10">
               <button
                 type="button"
-                className="min-w-[200px] px-4 py-3 bg-[#333] hover:bg-[#111] text-white text-sm font-bold rounded"
+                className="min-w-[200px] px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded"
               >
-                Buy now
+                Borrow now
               </button>
               <button
                 type="button"
                 className="min-w-[200px] px-4 py-2.5 border border-[#333] bg-transparent hover:bg-gray-50 text-[#333] text-sm font-bold rounded"
               >
-                Add to cart
+                Remind me
               </button>
             </div>
           </div>

@@ -62,14 +62,11 @@ router.post("/", (req, res) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error("Error sending email:", error);
-      res.status(500).json({ error: "Failed to send email" });
+      return res.status(500).json({ error: "Failed to send email" });
     } else {
-      console.log("Email sent:", info.response);
-      res.status(200).json({ message: "Email sent successfully" });
-
       // Emit a WebSocket event after sending the email
       eventEmitter.emit("notification", { to, subject, text });
+      return res.status(200).json({ message: "Email sent successfully" });
     }
   });
 });

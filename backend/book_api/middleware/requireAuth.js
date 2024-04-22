@@ -16,6 +16,7 @@ const requireAuth = async (req, res, next) => {
     );
     if (response.data.valid) {
       req.client = response.data.user;
+      req.token = token;
       next();
     } else {
       res.status(401).json({ error: "Invalid token" });
