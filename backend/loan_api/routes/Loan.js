@@ -2,6 +2,7 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import Loan from "../models/Loan.js";
 import FailedLoans from "../models/FailedLoans.js";
+import axios from "axios";
 const router = Router();
 
 router.get("/:clientId", async (req, res) => {
@@ -13,6 +14,7 @@ router.get("/:clientId", async (req, res) => {
     return res.status(500).json({ error: "Client loans not found " });
   return res.status(200).json(loans);
 });
+
 router.post("/addloan", async (req, res) => {
   const { clientId, bookId } = req.body;
 
@@ -54,45 +56,58 @@ router.post("/addloan", async (req, res) => {
   return res.status(200).json(loan);
 });
 
-router.post("/returnbook/:bookId", async (req, res) => {
+router.post("/returnbook/:bookId/:clientId", async (req, res) => {
   const { bookId, clientId } = req.params;
   try {
     const loan = await Loan.deleteOne({ clientId, bookId });
     const failedLoans = await FailedLoans.find({ bookId });
 
-    const bookRes = await fetch("http://localhost:3002/api/v1/book/" + bookId);
-    const book = await bookRes.json();
-    if (!bookRes.ok) {
-      return res.status(500).json(book);
+    const bookRes = await axios.get(
+      "http://localhost:3002/api/v1/book/" + bookId
+    );
+    const book = bookRes.data;
+    if (!book) {
+      return res.status(500).json({ error: "Book not found" });
     }
 
-    for (let index = 0; index < failedLoans.length; index++) {
-      const element = failedLoans[index];
-      const clientRes = await fetch(
-        "http://localhost:3000/api/v1/client/" + element.clientId
-      );
-      const client = await clientRes.json();
-      if (!clientRes.ok) {
-        return res.status(500).json(client);
-      }
-      const notifRes = await fetch(
-        "http://localhost:3001/api/v1/sendNotification",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            recipients: client.email,
-            subject: `Great news`,
-            text: `The book ${book.title} is avaible agin`,
-          }),
+    const notificationPromises = failedLoans.map(async (failedloan) => {
+      try {
+        const failedLoanRes = await axios.get(
+          "http://localhost:3000/api/v1/client/" + failedloan.clientId
+        );
+        const failedLoan = failedLoanRes.data;
+        if (!failedLoan) {
+          return res.status(500).json({ error: "Failed loan not found" });
         }
-      );
-      const noti = await notifRes.json();
-    }
+        if (!failedLoan.email) {
+          console.error(
+            `Error sending notification: No email found for client ${failedLoan._id}`
+          );
+          return;
+        }
+
+        const emailData = {
+          to: failedLoan.email,
+          subject: `Great news`,
+          text: `The book ${book.title} is available again`,
+        };
+
+        await axios.post(
+          "http://localhost:3001/api/v1/sendNotification",
+          emailData
+        );
+        console.log(`Notification sent to ${failedLoan.email}`);
+      } catch (error) {
+        console.error(`Error sending notification: ${error.message}`);
+      }
+    });
+
+    await Promise.all(notificationPromises);
 
     return res.status(200).json({ message: "Book is returned..." });
   } catch (error) {
-    return res.status(500).json({ error });
+    console.error(`Error returning book: ${error.message}`);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
-
 export default router;

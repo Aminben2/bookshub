@@ -25,4 +25,14 @@ connect(url)
     console.log("Not Connected to Mongodb");
   });
 
-app.use("/api/v1/client", routerClient);
+  app.get("//api/v1/client", async (req, res) => {
+    try {
+      const clients = await ClientModel.find({});
+      if (!clients || clients.length === 0)
+        return res.status(404).json({ error: "No clients found" });
+      return res.status(200).json(clients);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
