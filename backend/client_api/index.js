@@ -3,11 +3,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connect } from "mongoose";
 import routerClient from "./routes/client.js";
+import requireAuth from "./middleware/requireAuth.js";
 
 dotenv.config();
 const port = process.env.PORT || 3000;
 const url = process.env.URL_MONGOOSE;
-console.log(url);
 const app = express();
 
 app.use(express.json());
@@ -25,14 +25,4 @@ connect(url)
     console.log("Not Connected to Mongodb");
   });
 
-  app.get("//api/v1/client", async (req, res) => {
-    try {
-      const clients = await ClientModel.find({});
-      if (!clients || clients.length === 0)
-        return res.status(404).json({ error: "No clients found" });
-      return res.status(200).json(clients);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  });
+app.use("/api/v1/client", routerClient);

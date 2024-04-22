@@ -1,6 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Loan from "../models/Loan.js";
+import axios from "axios";
 import FailedLoans from "../models/FailedLoans.js";
 import axios from "axios";
 const router = Router();
@@ -59,7 +60,6 @@ router.post("/addloan", async (req, res) => {
 router.post("/returnbook/:bookId/:clientId", async (req, res) => {
   const { bookId, clientId } = req.params;
   try {
-    const loan = await Loan.deleteOne({ clientId, bookId });
     const failedLoans = await FailedLoans.find({ bookId });
 
     const bookRes = await axios.get(
@@ -70,41 +70,31 @@ router.post("/returnbook/:bookId/:clientId", async (req, res) => {
       return res.status(500).json({ error: "Book not found" });
     }
 
-    const notificationPromises = failedLoans.map(async (failedloan) => {
-      try {
-        const failedLoanRes = await axios.get(
-          "http://localhost:3000/api/v1/client/" + failedloan.clientId
-        );
-        const failedLoan = failedLoanRes.data;
-        if (!failedLoan) {
-          return res.status(500).json({ error: "Failed loan not found" });
-        }
-        if (!failedLoan.email) {
-          console.error(
-            `Error sending notification: No email found for client ${failedLoan._id}`
-          );
-          return;
-        }
-
-        const emailData = {
-          to: failedLoan.email,
-          subject: `Great news`,
-          text: `The book ${book.title} is available again`,
-        };
-
-        await axios.post(
-          "http://localhost:3001/api/v1/sendNotification",
-          emailData
-        );
-        console.log(`Notification sent to ${failedLoan.email}`);
-      } catch (error) {
-        console.error(`Error sending notification: ${error.message}`);
+    for (let index = 0; index < failedLoans.length; index++) {
+      const element = failedLoans[index];
+      const clientRes = await fetch(
+        "http://localhost:3000/api/v1/client/" + element.clientId
+      );
+      const client = await clientRes.json();
+      if (!clientRes.ok) {
+        return res.status(500).json(client);
       }
-    });
-
-    await Promise.all(notificationPromises);
+      const notifRes = await fetch(
+        "http://localhost:3001/api/v1/sendNotification",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            recipients: client.email,
+            subject: `Great news`,
+            text: `The book ${book.title} is avaible agin`,
+          }),
+        }
+      );
+      const noti = await notifRes.json();
+    }
 
     return res.status(200).json({ message: "Book is returned..." });
+    
   } catch (error) {
     console.error(`Error returning book: ${error.message}`);
     return res.status(500).json({ error: "Internal server error" });

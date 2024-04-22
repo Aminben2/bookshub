@@ -15,6 +15,10 @@ const BookSchema = Schema({
     type: String,
     required: true,
   },
+  cover: {
+    type: String,
+    required: true,
+  },
 });
 
 export default model("book", BookSchema);

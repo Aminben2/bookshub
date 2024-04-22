@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 // Routes
 import LoanRouter from "./routes/Loan.js";
+import requireAuth from "./middleware/requireAuth.js";
 
 //Configs
 const app = express();
@@ -12,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3004;
 const url_db = process.env.DB_URL;
 
 connect(url_db)
@@ -27,4 +28,5 @@ connect(url_db)
     console.log("Not Connected to Mongodb");
   });
 
+// End points
 app.use("/api/v1/loan", LoanRouter);
