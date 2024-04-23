@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import Loan from "../models/Loan.js";
 import axios from "axios";
 import FailedLoans from "../models/FailedLoans.js";
-import axios from "axios";
 const router = Router();
 
 router.get("/:clientId", async (req, res) => {
@@ -124,7 +123,7 @@ router.post("/returnbook/:bookId/:clientId", async (req, res) => {
     if (!loan.deletedCount == 1) {
       return res.status(500).json({ error: "Could not delete client Loan" });
     }
-    
+
     // Create an array of ObjectIds from the failedLoans array
     const objectIds = failedLoans.map(({ _id }) => ObjectId(_id));
 
