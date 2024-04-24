@@ -11,11 +11,12 @@ const requireAuth = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/v1/validate-token",
+      "http://localhost:3000/api/v1/client/validate-token",
       { token }
     );
     if (response.data.valid) {
       req.client = response.data.user;
+      req.token = token;
       next();
     } else {
       res.status(401).json({ error: "Invalid token" });

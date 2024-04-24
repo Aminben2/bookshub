@@ -17,7 +17,7 @@ router.get("/:clientId", async (req, res) => {
 });
 
 router.post("/addloan", async (req, res) => {
-  const { clientId, bookId } = req.body;
+  const { clientId, bookId, returnDate, loanDate } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(clientId))
     return res.status(400).json({ error: "Client id is not valid" });
@@ -52,9 +52,22 @@ router.post("/addloan", async (req, res) => {
   const client = await clientRes.json();
   if (!client) res.status(500).json({ error: "Client not found" });
 
-  // const bookUpdate = await Book
+  const bookUpdate = await fetch(
+    "http://localhost:3002/api/v1/book/toggleLoaned/" + bookId,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.token}`,
+      },
+    }
+  );
+  const data = await bookUpdate.json();
+  if (!bookUpdate.ok)
+    return res
+      .status(500)
+      .json({ error: `could not toggle loaned : ${data.error}` });
 
-  
   const loan = await Loan.create(req.body);
   if (!loan) res.status(500).json({ error: "Could not create loan" });
   return res.status(200).json(loan);
@@ -73,34 +86,63 @@ router.post("/returnbook/:bookId/:clientId", async (req, res) => {
       return res.status(500).json({ error: "Book not found" });
     }
 
-    for (let index = 0; index < failedLoans.length; index++) {
-      const element = failedLoans[index];
-      const clientRes = await fetch(
-        "http://localhost:3000/api/v1/client/" + element.clientId
-      );
-      const client = await clientRes.json();
-      if (!clientRes.ok) {
-        return res.status(500).json(client);
-      }
-      const notifRes = await fetch(
-        "http://localhost:3001/api/v1/sendNotification",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            recipients: client.email,
-            subject: `Great news`,
-            text: `The book ${book.title} is avaible agin`,
-          }),
+    const notificationPromises = failedLoans.map(async (failedloan) => {
+      try {
+        const failedLoanRes = await axios.get(
+          "http://localhost:3000/api/v1/client/" + failedloan.clientId
+        );
+        const failedLoan = failedLoanRes.data;
+        if (!failedLoan) {
+          return res.status(500).json({ error: "Failed loan not found" });
         }
-      );
-      const noti = await notifRes.json();
+        if (!failedLoan.email) {
+          return res.status(500).json({
+            error: `Error sending notification: No email found for client ${failedLoan._id}`,
+          });
+        }
+
+        const emailData = {
+          to: failedLoan.email,
+          subject: " Great news",
+          text: `The book ${book.title} is available again`,
+        };
+
+        await axios.post(
+          "http://localhost:3001/api/v1/sendNotification",
+          emailData
+        );
+      } catch (error) {
+        return res
+          .status(500)
+          .json({ error: `Error sending notification: ${error.message}` });
+      }
+    });
+
+    await Promise.all(notificationPromises);
+
+    const loan = await Loan.deleteOne({ clientId, bookId });
+    if (!loan.deletedCount == 1) {
+      return res.status(500).json({ error: "Could not delete client Loan" });
+    }
+    
+    // Create an array of ObjectIds from the failedLoans array
+    const objectIds = failedLoans.map(({ _id }) => ObjectId(_id));
+
+    // Create an array of filter conditions
+    const filters = failedLoans.map(({ clientId }) => ({ _id: clientId }));
+
+    // Delete documents based on the filters
+    const { deletedCount } = await FailedLoans.deleteMany({ $or: filters });
+    if (!deletedCount == 0) {
+      return res
+        .status(500)
+        .json({ error: "Could not delete failedLoans for this book" });
     }
 
     return res.status(200).json({ message: "Book is returned..." });
-    
   } catch (error) {
     console.error(`Error returning book: ${error.message}`);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error });
   }
 });
 export default router;

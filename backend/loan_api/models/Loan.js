@@ -17,6 +17,7 @@ const LoanSchema = Schema({
   returnDate: {
     type: Date,
     default: null,
+    required: true,
   },
 });
 
