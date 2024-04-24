@@ -9,13 +9,20 @@ services:
       - book_service
       - loan_service
       - notification_service
-
+    
+  rabbitMQ:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    
   client_service:
     build: ./backend/client_api
     ports:
       - "3000:3000"
     depends_on:
       - client_db
+      - rabbitMQ
   client_db:
     image: mongo
     environment:
@@ -26,9 +33,10 @@ services:
   book_service:
     build: ./backend/book_api
     ports:
-      - "3000:3000"
+      - "3002:3000"
     depends_on:
       - book_db
+      - rabbitMQ
   book_db:
     image: mongo
     environment:
@@ -39,9 +47,10 @@ services:
   loan_service:
     build: ./backend/loan_api
     ports:
-      - "3000:3000"
+      - 3004:3000
     depends_on:
       - loan_db
+      - rabbitMQ
   loan_db:
     image: mongo
     environment:
@@ -52,9 +61,10 @@ services:
   notification_service:
     build: ./backend/notification_api
     ports:
-      - "3000:3000"
+      - 3001:3000
     depends_on:
       - notification_db
+      - rabbitMQ
   notification_db:
     image: mongo
     environment:
