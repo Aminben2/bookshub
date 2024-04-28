@@ -8,7 +8,6 @@ import fs from "fs";
 
 // Routes
 import BookRouter from "./routes/Book.js";
-import requireAuth from "./middleware/requireAuth.js";
 
 //Configs
 const app = express();
@@ -67,7 +66,5 @@ app.post("/upload", upload.array("files", 10), (req, res) => {
   res.status(200).json({ url: filenames });
 });
 
-
 // End points
-// app.use(requireAuth);
 app.use("/api/v1/book", BookRouter);

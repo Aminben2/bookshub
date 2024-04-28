@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logout } from "../../store/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import SideBar from "../SideBar/SiseBar";
@@ -10,6 +10,7 @@ function Header({ user, isDarkMOde }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showLoansModal, setShowLoansModal] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { clientLoans } = useSelector((state) => state.loan);
   useEffect(() => {
@@ -142,7 +143,17 @@ function Header({ user, isDarkMOde }) {
               0
             </span>
           </span>
-          <span className="relative" onClick={toggleLoansModal}>
+          <span
+            className="relative"
+            onClick={
+              user
+                ? toggleLoansModal
+                : (e) => {
+                    e.preventDefault();
+                    navigate("/login");
+                  }
+            }
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20px"

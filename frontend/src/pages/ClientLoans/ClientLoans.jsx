@@ -10,10 +10,12 @@ function ClientLoans({ show, setShow }) {
 
   const user = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  if (!user) {
-    navigate("/login");
-    return;
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   const { clientLoans } = useSelector((state) => state.loan);
   const dispatch = useDispatch();

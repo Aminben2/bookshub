@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import Loan from "../models/Loan.js";
 import axios from "axios";
 import FailedLoans from "../models/FailedLoans.js";
+import requireAuth from "../middleware/requireAuth.js";
 const router = Router();
 
-router.get("/:clientId", async (req, res) => {
+router.get("/:clientId", requireAuth, async (req, res) => {
   const { clientId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(clientId))
     return res.status(400).json({ error: "Client id is not valid" });
@@ -15,7 +16,7 @@ router.get("/:clientId", async (req, res) => {
   return res.status(200).json(loans);
 });
 
-router.post("/addloan", async (req, res) => {
+router.post("/addloan", requireAuth, async (req, res) => {
   const { clientId, bookId, returnDate, loanDate } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(clientId))
@@ -72,7 +73,7 @@ router.post("/addloan", async (req, res) => {
   return res.status(200).json(loan);
 });
 
-router.post("/returnbook/:bookId/:clientId", async (req, res) => {
+router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
   const { bookId, clientId } = req.params;
   try {
     const failedLoans = await FailedLoans.find({ bookId });
@@ -84,6 +85,21 @@ router.post("/returnbook/:bookId/:clientId", async (req, res) => {
     if (!book) {
       return res.status(500).json({ error: "Book not found" });
     }
+    const bookUpdate = await fetch(
+      "http://localhost:3002/api/v1/book/toggleLoaned/" + bookId,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${req.token}`,
+        },
+      }
+    );
+    const data = await bookUpdate.json();
+    if (!bookUpdate.ok)
+      return res
+        .status(500)
+        .json({ error: `could not toggle loaned : ${data.error}` });
 
     const notificationPromises = failedLoans.map(async (failedloan) => {
       try {
@@ -125,7 +141,7 @@ router.post("/returnbook/:bookId/:clientId", async (req, res) => {
     }
 
     // Create an array of ObjectIds from the failedLoans array
-    const objectIds = failedLoans.map(({ _id }) => ObjectId(_id));
+    // const objectIds = failedLoans.map((f) => f._id);
 
     // Create an array of filter conditions
     const filters = failedLoans.map(({ clientId }) => ({ _id: clientId }));

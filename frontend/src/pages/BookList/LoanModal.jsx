@@ -72,8 +72,8 @@ function LoanModal({ show, setShow, bookId }) {
               condition
             </p>
 
-            <div classNameName="flex flex-col gap-5">
-              <label htmlFor="returnDate" classNameName="font-semibold">
+            <div className="flex flex-col gap-5">
+              <label htmlFor="returnDate" className="font-semibold">
                 Choose a return date :
               </label>
               <input
@@ -81,18 +81,18 @@ function LoanModal({ show, setShow, bookId }) {
                 value={data}
                 onChange={(e) => setData(e.target.value)}
                 type="date"
-                classNameName="px-4 py-3 bg-[#f0f1f2] text-black w-full text-sm outline-[#007bff] rounded"
+                className="px-4 py-3 bg-[#f0f1f2] text-black w-full text-sm outline-[#007bff] rounded"
               />
             </div>
 
-            <div classNameName="flex mt-2 -mx-3">
+            <div className="flex mt-2 -mx-3">
               {error && (
                 <div
-                  classNameName="flex w-full bg-red-100 dark:bg-red-200 rounded-lg p-4 mx-3 mb-4 text-sm text-red-700"
+                  className="flex w-full bg-red-100 dark:bg-red-200 rounded-lg p-4 mx-3 mb-4 text-sm text-red-700"
                   role="alert"
                 >
                   <svg
-                    classNameName="w-5 h-5 inline mr-3"
+                    className="w-5 h-5 inline mr-3"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ function LoanModal({ show, setShow, bookId }) {
                     ></path>
                   </svg>
                   <div>
-                    <span classNameName="font-medium">Error!</span>: {error}
+                    <span className="font-medium">Error!</span>: {error}
                   </div>
                 </div>
               )}

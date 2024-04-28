@@ -14,6 +14,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/search", async (req, res) => {
+  const query = req.query.q;
+  try {
+    const books = await Book.find({
+      $or: [
+        { id: { $regex: query, $options: "i" } },
+        { code: { $regex: query, $options: "i" } },
+        { title: { $regex: query, $options: "i" } },
+      ],
+    });
+    res.json({ books });
+  } catch (error) {
+    console.error("Error searching books:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const loan = req.body;

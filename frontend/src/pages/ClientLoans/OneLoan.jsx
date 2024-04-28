@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeClienrLoan } from "../../store/LoanSlice";
 import { getBook } from "../../store/BookSlice";
 
-function OneLoan({ bookId, returnDate, setError }) {
+function OneLoan({ _id, bookId, returnDate, setError }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
   const { book } = useSelector((state) => state.book);
@@ -28,7 +28,7 @@ function OneLoan({ bookId, returnDate, setError }) {
       setError(data.error);
       console.log(data.error);
     } else {
-      dispatch(removeClienrLoan());
+      dispatch(removeClienrLoan(_id));
     }
   };
   return (

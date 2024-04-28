@@ -2,3 +2,4 @@
 /backend/client_api/node_modules
 /backend/loan_api/node_modules
 /backend/notification_api/node_modules
+/backend/notification_api/.env

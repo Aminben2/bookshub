@@ -5,7 +5,6 @@ export const getClientLoans = createAsyncThunk(
   "loans/getClientLoans",
   async () => {
     const user = JSON.parse(localStorage.getItem("login"));
-    console.log(user._id);
     try {
       const res = await fetch(url + `/${user._id}`, {
         headers: {
@@ -32,7 +31,10 @@ const loanSlice = createSlice({
   },
   reducers: {
     addClientLoan: (state, action) => {
-      state.clientLoans.push(action.payload);
+      state.clientLoans.push({
+        ...action.payload,
+        loanDate: action.payload.returnDate.toISOString(),
+      });
     },
     removeClienrLoan: (state, action) => {
       const id = action.payload;
