@@ -11,9 +11,18 @@ router.get("/:clientId", requireAuth, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(clientId))
     return res.status(400).json({ error: "Client id is not valid" });
   const loans = await Loan.find({ clientId: clientId });
-  if (loans.length == 0)
-    return res.status(500).json({ error: "Client loans not found " });
+  if (!loans) return res.status(500).json({ error: "Client loans not found " });
   return res.status(200).json(loans);
+});
+
+router.post("/remindeMe", requireAuth, async (req, res) => {
+  const failedLoan = req.body;
+  try {
+    const result = await FailedLoans.create(failedLoan);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong try again!" });
+  }
 });
 
 router.post("/addloan", requireAuth, async (req, res) => {
@@ -62,7 +71,7 @@ router.post("/addloan", requireAuth, async (req, res) => {
       },
     }
   );
-  const data = await bookUpdate.json();
+  const updatedBook = await bookUpdate.json();
   if (!bookUpdate.ok)
     return res
       .status(500)
@@ -70,7 +79,7 @@ router.post("/addloan", requireAuth, async (req, res) => {
 
   const loan = await Loan.create(req.body);
   if (!loan) res.status(500).json({ error: "Could not create loan" });
-  return res.status(200).json(loan);
+  return res.status(200).json({ loan, book: updatedBook });
 });
 
 router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
@@ -95,66 +104,61 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
         },
       }
     );
-    const data = await bookUpdate.json();
+    const updatedBook = await bookUpdate.json();
     if (!bookUpdate.ok)
       return res
         .status(500)
-        .json({ error: `could not toggle loaned : ${data.error}` });
+        .json({ error: `could not toggle loaned : ${updatedBook.error}` });
 
-    const notificationPromises = failedLoans.map(async (failedloan) => {
-      try {
-        const failedLoanRes = await axios.get(
-          "http://localhost:3000/api/v1/client/" + failedloan.clientId
-        );
-        const failedLoan = failedLoanRes.data;
-        if (!failedLoan) {
-          return res.status(500).json({ error: "Failed loan not found" });
+    if (failedLoans.length > 1) {
+      const notificationPromises = failedLoans.map(async (failedloan) => {
+        try {
+          const failedLoanRes = await axios.get(
+            "http://localhost:3000/api/v1/client/" + failedloan.clientId
+          );
+          const failedLoan = failedLoanRes.data;
+          if (!failedLoan) {
+            return res.status(500).json({ error: "Failed loan not found" });
+          }
+          if (!failedLoan.email) {
+            return res.status(500).json({
+              error: `Error sending notification: No email found for client ${failedLoan._id}`,
+            });
+          }
+
+          const emailData = {
+            to: failedLoan.email,
+            subject: " Great news",
+            text: `The book ${book.title} is available again`,
+          };
+
+          await axios.post(
+            "http://localhost:3001/api/v1/sendNotification",
+            emailData
+          );
+        } catch (error) {
+          return res
+            .status(500)
+            .json({ error: `Error sending notification: ${error.message}` });
         }
-        if (!failedLoan.email) {
-          return res.status(500).json({
-            error: `Error sending notification: No email found for client ${failedLoan._id}`,
-          });
-        }
+      });
 
-        const emailData = {
-          to: failedLoan.email,
-          subject: " Great news",
-          text: `The book ${book.title} is available again`,
-        };
+      await Promise.all(notificationPromises);
 
-        await axios.post(
-          "http://localhost:3001/api/v1/sendNotification",
-          emailData
-        );
-      } catch (error) {
+      const { deletedCount } = await FailedLoans.deleteMany({ clientId });
+      if (!deletedCount == 0) {
         return res
           .status(500)
-          .json({ error: `Error sending notification: ${error.message}` });
+          .json({ error: "Could not delete failedLoans for this book" });
       }
-    });
-
-    await Promise.all(notificationPromises);
+    }
 
     const loan = await Loan.deleteOne({ clientId, bookId });
     if (!loan.deletedCount == 1) {
       return res.status(500).json({ error: "Could not delete client Loan" });
     }
 
-    // Create an array of ObjectIds from the failedLoans array
-    // const objectIds = failedLoans.map((f) => f._id);
-
-    // Create an array of filter conditions
-    const filters = failedLoans.map(({ clientId }) => ({ _id: clientId }));
-
-    // Delete documents based on the filters
-    const { deletedCount } = await FailedLoans.deleteMany({ $or: filters });
-    if (!deletedCount == 0) {
-      return res
-        .status(500)
-        .json({ error: "Could not delete failedLoans for this book" });
-    }
-
-    return res.status(200).json({ message: "Book is returned..." });
+    return res.status(200).json({ book: updatedBook });
   } catch (error) {
     console.error(`Error returning book: ${error.message}`);
     return res.status(500).json({ error });

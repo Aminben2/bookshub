@@ -23,9 +23,9 @@ function ClientLoans({ show, setShow }) {
     dispatch(getClientLoans());
   }, []);
   return (
-    <div className="font-[sans-serif] bg-white relative shadow-md rounded p-6 max-h-[500px]">
+    <div className="font-[sans-serif] bg-white relative shadow-md rounded p-6 max-h-[500px] overflow-auto">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center shadow-md p-5">
           <h2 className="text-3xl font-extrabold text-[#333]">Your Loans</h2>
           <span className="text-blue-500 cursor-pointer" onClick={setShow}>
             <i className="fa-solid fa-x"></i>
@@ -36,7 +36,7 @@ function ClientLoans({ show, setShow }) {
             <InfoAlert msg="You have no books loaned" />
           ) : (
             <table className="mt-12 w-full border-collapse divide-y shadow-md">
-              <thead className="whitespace-nowrap text-left">
+              <thead className="whitespace-nowrap text-center">
                 <tr>
                   <th className="text-base text-gray-500 p-4">Description</th>
                   <th className="text-base text-gray-500 p-4">Quantity</th>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addClientLoan } from "../../store/LoanSlice";
+import { updateBook } from "../../store/BookSlice";
 
 function LoanModal({ show, setShow, bookId }) {
   const [error, setError] = useState("");
@@ -42,6 +43,7 @@ function LoanModal({ show, setShow, bookId }) {
       document.body.style.overflow = "auto";
       // Add user loan to redux
       dispatch(addClientLoan(loan));
+      dispatch(updateBook(dataRes.book));
     }
   };
   return (

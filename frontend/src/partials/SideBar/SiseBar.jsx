@@ -123,6 +123,7 @@ function SiseBar({ show, setShow }) {
           </li>
           <li>
             <NavLink
+              onClick={setShow}
               to="/returnBook"
               className="text-[#333] text-sm flex items-center hover:text-[#007bff] hover:border-r-[5px] border-[#077bff] active:border-[#077bff] hover:bg-gray-100 px-8 py-4 transition-all"
             >

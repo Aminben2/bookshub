@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addClientLoan } from "../../store/LoanSlice";
+import SeccussAlert from "../../components/Alerts/SeccussAlert";
+import { updateBook } from "../../store/BookSlice";
 
 function LoanBook() {
   const user = useSelector((state) => state.auth);
@@ -9,6 +11,7 @@ function LoanBook() {
   const [returnDate, setReturnDate] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [error, setError] = useState("");
+  const [seccuss, setSeccuss] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
@@ -34,24 +37,30 @@ function LoanBook() {
           Authorization: `Bearer ${user.token}`,
         },
       });
-
+      const dataRes = await res.json();
       if (!res.ok) {
-        const dataRes = await res.json();
         setError(dataRes.error);
-        setBookCode("");
-        setBookTitle("");
-        setReturnDate("");
-        setSuggestions([]);
       } else {
         // Handle successful loan
         dispatch(addClientLoan(loan));
+        dispatch(updateBook(dataRes.book));
+        setBookCode("");
+        setBookTitle("");
+        setReturnDate("");
+        document.getElementById("filter").value = "";
+        document.getElementById("address").value = "";
+        await fetchBookSuggestions("");
+        setSeccuss(true);
+        setTimeout(() => {
+          setSeccuss(false);
+        }, 5000);
       }
     } catch (error) {
       console.error("Error:", error);
       setError("An error occurred. Please try again later.");
     }
   };
-  console.log(suggestions);
+
   const fetchBookSuggestions = async (query) => {
     try {
       const response = await fetch(
@@ -66,6 +75,12 @@ function LoanBook() {
 
   return (
     <div className="grid sm:grid-cols-1 p-20 items-center gap-16 my-6 mx-auto max-w-4xl bg-white text-[#333] font-[sans-serif] shadow-lg">
+      {seccuss && (
+        <SeccussAlert
+          msg={"Book loaned seccussfully"}
+          setShow={() => setSeccuss(false)}
+        />
+      )}
       <div>
         <h1 className="text-3xl font-extrabold">Let's Enjoy</h1>
         <p className="text-sm text-gray-400 mt-3">
@@ -82,6 +97,7 @@ function LoanBook() {
             </li>
             <li className="mb-2">
               <input
+                id="filter"
                 placeholder="Type something"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 block w-full py-3 px-4"
                 onChange={(e) => {
@@ -106,6 +122,7 @@ function LoanBook() {
           </ul>
         </div>
         <input
+          id="address"
           type="text"
           placeholder="Delivery Address"
           className="w-full rounded-md py-3 px-4 bg-gray-100 border border-gray-300 text-sm outline-[#007bff]"

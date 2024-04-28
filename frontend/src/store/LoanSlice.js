@@ -33,7 +33,7 @@ const loanSlice = createSlice({
     addClientLoan: (state, action) => {
       state.clientLoans.push({
         ...action.payload,
-        loanDate: action.payload.returnDate.toISOString(),
+        loanDate: action.payload.returnDate.toString(),
       });
     },
     removeClienrLoan: (state, action) => {

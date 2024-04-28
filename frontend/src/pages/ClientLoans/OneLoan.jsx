@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeClienrLoan } from "../../store/LoanSlice";
-import { getBook } from "../../store/BookSlice";
+import { getBook, updateBook } from "../../store/BookSlice";
 
 function OneLoan({ _id, bookId, returnDate, setError }) {
   const dispatch = useDispatch();
@@ -29,6 +29,7 @@ function OneLoan({ _id, bookId, returnDate, setError }) {
       console.log(data.error);
     } else {
       dispatch(removeClienrLoan(_id));
+      dispatch(updateBook(data.book));
     }
   };
   return (

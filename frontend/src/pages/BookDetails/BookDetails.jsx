@@ -1,18 +1,68 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getBook } from "../../store/BookSlice";
+import LoanModal from "../BookList/LoanModal";
+import ErrorAlert from "../../components/Alerts/ErrorAlert";
+import SeccussAlert from "../../components/Alerts/SeccussAlert";
 
 function BookDetails() {
+  const user = useSelector((state) => state.auth);
   const { book } = useSelector((state) => state.book);
+  const [showLoanModal, setShowLoanModal] = useState(false);
+  const [error, setError] = useState("");
+  const [msg, setMsg] = useState("");
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [showSeccussAlert, setShowSeccussAlert] = useState(false);
+
   const dispatch = useDispatch();
   const { id } = useParams();
+
+  const remindeMeLater = async () => {
+    const res = await fetch("http://localhost:3004/api/v1/loan/remindeMe", {
+      method: "POST",
+      body: JSON.stringify({ clientId: user._id, bookId: book._id }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.error);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, [5000]);
+      console.log(data.error);
+    } else {
+      setShowSeccussAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, [5000]);
+      setMsg("We will sent you a notification when the book is available");
+    }
+  };
   useEffect(() => {
     dispatch(getBook(id));
   }, [id]);
   return (
     <div className="font-[sans-serif] bg-white">
       <div className="p-6 lg:max-w-7xl max-w-4xl mx-auto">
+        {showLoanModal && (
+          <LoanModal
+            show={showLoanModal}
+            setShow={() => setShowLoanModal()}
+            bookId={id}
+          />
+        )}
+        {showErrorAlert && (
+          <ErrorAlert msg={error} setShow={() => setShowErrorAlert(false)} />
+        )}
+        {showSeccussAlert && (
+          <SeccussAlert msg={msg} setShow={() => setShowSeccussAlert(false)} />
+        )}
         <div className="grid items-start grid-cols-1 lg:grid-cols-5 gap-12 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6">
           <div className="lg:col-span-3 w-full lg:sticky top-0 text-center">
             <div className="bg-gray-100 px-4 py-10 rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] relative">
@@ -100,14 +150,26 @@ function BookDetails() {
             </div>
             <div className="flex flex-wrap gap-4 mt-10">
               <button
+                onClick={
+                  user && !book.loaned
+                    ? () => setShowLoanModal(true)
+                    : (e) => e.preventDefault()
+                }
+                disabled={book.loaned}
                 type="button"
-                className="min-w-[200px] px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded"
+                className={`min-w-[200px] px-4 py-3  bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold rounded ${
+                  book.loaned && "bg-gray-400 hover:bg-gray-400"
+                }`}
               >
                 Borrow now
               </button>
               <button
+                onClick={
+                  user ? () => remindeMeLater() : (e) => e.preventDefault()
+                }
+                disabled={!book.loaned}
                 type="button"
-                className="min-w-[200px] px-4 py-2.5 border border-[#333] bg-transparent hover:bg-gray-50 text-[#333] text-sm font-bold rounded"
+                className={`min-w-[200px] px-4 py-2.5 border border-[#333] bg-transparent hover:bg-gray-50 text-[#333] text-sm font-bold rounded`}
               >
                 Remind me
               </button>
