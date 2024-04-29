@@ -8,7 +8,7 @@ function Footer() {
           <a href="">
             <img
               //   src="https://readymadeui.com/readymadeui.svg"
-              src="./images/logo.png"
+              src="/images/logo.png"
               alt="logo"
               className="w-48"
             />

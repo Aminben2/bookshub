@@ -43,7 +43,7 @@ function SiseBar({ show, setShow }) {
         <div className="flex flex-row justify-between items-center px-5">
           <a href="" className="text-center">
             <img
-              src="./images/logo.png"
+              src="/images/logo.png"
               alt="logo"
               className="w-[160px] inline"
             />

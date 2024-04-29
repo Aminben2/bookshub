@@ -5,21 +5,33 @@ import { useDispatch, useSelector } from "react-redux";
 import SideBar from "../SideBar/SiseBar";
 import ClientLoans from "../../pages/ClientLoans/ClientLoans";
 import { getClientLoans } from "../../store/LoanSlice";
+import FavoritesBooks from "../../components/FavoritesBooks/FavoritesBooks";
+import { getFavoriteBooks } from "../../store/BookSlice";
 
 function Header({ user, isDarkMOde }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showLoansModal, setShowLoansModal] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { clientLoans } = useSelector((state) => state.loan);
+  const { favoritesBooks } = useSelector((state) => state.book);
+
   useEffect(() => {
     dispatch(getClientLoans());
+    dispatch(getFavoriteBooks());
   }, []);
+
+
 
   const toggleSidebar = () => {
     setShowMenu(!showMenu);
     document.body.style.overflow = showMenu ? "auto" : "hidden";
+  };
+
+  const toggleFavorites = () => {
+    setShowFavorites(!showFavorites);
   };
 
   const toggleLoansModal = () => {
@@ -38,6 +50,13 @@ function Header({ user, isDarkMOde }) {
           />
         </div>
       )}
+      {/* Favorites books dropdown */}
+      {showFavorites && (
+        <FavoritesBooks
+          show={showFavorites}
+          setShow={() => toggleFavorites()}
+        />
+      )}
       {/* side bar */}
       {showMenu && (
         <div className="fixed lg:hidden inset-0 p-4 w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]">
@@ -46,7 +65,7 @@ function Header({ user, isDarkMOde }) {
       )}
       <div className="flex flex-wrap items-center max-lg:gap-y-6 max-sm:gap-x-4">
         <Link to="/">
-          <img src="./images/logo.png" alt="logo" className="w-36" />
+          <img src="/images/logo.png" alt="logo" className="w-36" />
         </Link>
         <div
           id="collapseMenu"
@@ -129,6 +148,14 @@ function Header({ user, isDarkMOde }) {
         <div className="flex items-center ml-auto space-x-8">
           <span className="relative">
             <svg
+              onClick={
+                user
+                  ? toggleFavorites
+                  : (e) => {
+                      e.preventDefault();
+                      navigate("/login");
+                    }
+              }
               xmlns="http://www.w3.org/2000/svg"
               width="20px"
               className="cursor-pointer fill-[#000] hover:fill-[#007bff] inline-block"
@@ -140,7 +167,7 @@ function Header({ user, isDarkMOde }) {
               />
             </svg>
             <span className="absolute left-auto -ml-1 -top-1 rounded-full bg-red-500 px-1 py-0 text-xs text-white">
-              0
+              {favoritesBooks.length}
             </span>
           </span>
           <span

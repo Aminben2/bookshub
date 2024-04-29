@@ -1,6 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const url = "http://localhost:3002/api/v1/book";
 
+export const getFavoriteBooks = createAsyncThunk(
+  "books/getFavoriteBooks",
+  async () => {
+    const user = JSON.parse(localStorage.getItem("login"));
+    try {
+      const res = await fetch(url + "/favorites/" + user._id, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (!res.ok) throw new Error("Could not fetch data from book service");
+      const data = await res.json();
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 export const getBooks = createAsyncThunk("books/getBooks", async () => {
   const user = JSON.parse(localStorage.getItem("login"));
   try {
@@ -40,12 +61,25 @@ const bookSlice = createSlice({
   name: "books",
   initialState: {
     books: [],
+    favoritesBooks: [],
     book: {},
-    isLoading: false,
+    booksIsLoading: false,
+    favBooksIsloading: false,
+    bookIslaading: false,
   },
   reducers: {
     updateBook: (state, action) => {
       state.book = action.payload;
+    },
+    addFavorite: (state, action) => {
+      state.favoritesBooks.push(action.payload);
+    },
+    removeFavorite: (state, action) => {
+      const bookId = action.payload;
+
+      state.favoritesBooks = state.favoritesBooks.filter(
+        (f) => f._id !== bookId
+      );
     },
   },
   extraReducers: (builder) => {
@@ -58,6 +92,16 @@ const bookSlice = createSlice({
     builder.addCase(getBooks.fulfilled, (state, action) => {
       state.isLoading = false;
       state.books = action.payload;
+    });
+    builder.addCase(getFavoriteBooks.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getFavoriteBooks.rejected, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getFavoriteBooks.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.favoritesBooks = action.payload;
     });
     builder.addCase(getBook.pending, (state, action) => {
       state.isLoading = true;
@@ -72,5 +116,5 @@ const bookSlice = createSlice({
   },
 });
 
-export const { updateBook } = bookSlice.actions;
+export const { updateBook, addFavorite, removeFavorite } = bookSlice.actions;
 export default bookSlice;

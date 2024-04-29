@@ -1,8 +1,10 @@
 import { Router } from "express";
 import Book from "../models/Book.js";
+import Favorite from "../models/Favorite.js";
 import mongoose from "mongoose";
 import axios from "axios";
 import requireAuth from "../middleware/requireAuth.js";
+
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -14,6 +16,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/favorites/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const books = await Favorite.find({ clientId: id });
+    return res.status(200).json(books);
+  } catch (error) {
+    return res.status(500).json({ error: "Books not found" });
+  }
+});
 router.get("/search", async (req, res) => {
   const query = req.query.q;
   try {
@@ -42,6 +53,19 @@ router.get("/:id", async (req, res) => {
   if (!book) return res.status(404).json({ error: "Book not found" });
 
   return res.status(200).json(book);
+});
+
+router.post("/addFav", requireAuth, async (req, res) => {
+  const fav = req.body;
+  if (!fav) return res.status(400).json({ error: "Request body is empty" });
+
+  try {
+    const newFav = await Favorite.create(fav);
+    return res.status(201).json(newFav);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Could not add book to favorites" });
+  }
 });
 
 router.post("/", requireAuth, async (req, res) => {
@@ -130,6 +154,29 @@ router.put("/toggleLoaned/:id", requireAuth, async (req, res) => {
     return res
       .status(500)
       .json({ error: `Error toggling loaned field: ${error}` });
+  }
+});
+
+router.delete("/removeFav/:id", requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ error: "Invalid favoriteBook ID" });
+
+    const existingFavorite = await Favorite.findOneAndDelete({
+      _id: id,
+    });
+
+    if (!existingFavorite) {
+      return res
+        .status(200)
+        .json({ error: "book deletion failed from favorites" });
+    }
+
+    res.status(200).json({ message: "Book deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Could not delete book" });
   }
 });
 

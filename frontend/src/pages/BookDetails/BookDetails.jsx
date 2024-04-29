@@ -1,23 +1,93 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getBook } from "../../store/BookSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { addFavorite, getBook, getFavoriteBooks } from "../../store/BookSlice";
 import LoanModal from "../BookList/LoanModal";
 import ErrorAlert from "../../components/Alerts/ErrorAlert";
 import SeccussAlert from "../../components/Alerts/SeccussAlert";
 
 function BookDetails() {
   const user = useSelector((state) => state.auth);
-  const { book } = useSelector((state) => state.book);
+  const { book, bookIslaading, favBooksIsloading, favoritesBooks } =
+    useSelector((state) => state.book);
   const [showLoanModal, setShowLoanModal] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favBookId, setFavBookId] = useState("");
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [showSeccussAlert, setShowSeccussAlert] = useState(false);
-
   const dispatch = useDispatch();
   const { id } = useParams();
 
+  useEffect(() => {
+    dispatch(getBook(id));
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    dispatch(getFavoriteBooks());
+    const result = favoritesBooks.find((f) => f.bookId === id);
+    if (!favBooksIsloading && result) {
+      setIsFavorite(true);
+      setFavBookId(result._id);
+    }
+  }, [favoritesBooks, dispatch, id, favBooksIsloading]);
+
+  const navigate = useNavigate();
+  if (!bookIslaading && !book) {
+    navigate("/books");
+  }
+
+  const addFav = async () => {
+    const fav = {
+      clientId: user._id,
+      bookId: book._id,
+      title: book.title,
+      cover: book.cover,
+    };
+    const res = await fetch("http://localhost:3002/api/v1/book/addFav", {
+      method: "POST",
+      body: JSON.stringify(fav),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setShowErrorAlert(false);
+      }, [5000]);
+      setError(data.error);
+    } else {
+      dispatch(addFavorite(fav));
+      setShowSeccussAlert(true);
+      setTimeout(() => {
+        setShowSeccussAlert(false);
+      }, [5000]);
+      setMsg("Book is added to favorite");
+    }
+  };
+  const removeFavv = async () => {
+    const res = await fetch(
+      `http://localhost:3002/api/v1/book/removeFav/${favBookId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      console.log(data.error);
+    } else {
+      dispatch(removeFavorite(props._id));
+    }
+  };
   const remindeMeLater = async () => {
     const res = await fetch("http://localhost:3004/api/v1/loan/remindeMe", {
       method: "POST",
@@ -35,18 +105,15 @@ function BookDetails() {
       setTimeout(() => {
         setShowErrorAlert(false);
       }, [5000]);
-      console.log(data.error);
     } else {
       setShowSeccussAlert(true);
       setTimeout(() => {
-        setShowErrorAlert(false);
+        setShowSeccussAlert(false);
       }, [5000]);
       setMsg("We will sent you a notification when the book is available");
     }
   };
-  useEffect(() => {
-    dispatch(getBook(id));
-  }, [id]);
+
   return (
     <div className="font-[sans-serif] bg-white">
       <div className="p-6 lg:max-w-7xl max-w-4xl mx-auto">
@@ -72,19 +139,18 @@ function BookDetails() {
                 alt="Product"
                 className="w-4/5 rounded object-cover"
               />
-              <button type="button" className="absolute top-4 right-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20px"
-                  fill="black"
-                  className="mr-1 hover:fill-red-500"
-                  viewBox="0 0 64 64"
-                >
-                  <path
-                    d="M45.5 4A18.53 18.53 0 0 0 32 9.86 18.5 18.5 0 0 0 0 22.5C0 40.92 29.71 59 31 59.71a2 2 0 0 0 2.06 0C34.29 59 64 40.92 64 22.5A18.52 18.52 0 0 0 45.5 4ZM32 55.64C26.83 52.34 4 36.92 4 22.5a14.5 14.5 0 0 1 26.36-8.33 2 2 0 0 0 3.27 0A14.5 14.5 0 0 1 60 22.5c0 14.41-22.83 29.83-28 33.14Z"
-                    data-original="#000000"
-                  ></path>
-                </svg>
+              <button
+                type="button"
+                className={`absolute top-4 right-4 ${
+                  isFavorite && "text-red-500"
+                }`}
+                onClick={isFavorite ? removeFavv : addFav}
+              >
+                {isFavorite ? (
+                  <i className="fa-solid fa-heart"></i>
+                ) : (
+                  <i className="fa-regular fa-heart"></i>
+                )}
               </button>
             </div>
           </div>
