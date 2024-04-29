@@ -83,85 +83,99 @@ router.post("/addloan", requireAuth, async (req, res) => {
 });
 
 router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
-  const { bookId, clientId } = req.params;
-  try {
-    const failedLoans = await FailedLoans.find({ bookId });
+  let { bookId, clientId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(clientId))
+    return res.status(400).json({ error: "Client id is not valid" });
 
-    const bookRes = await axios.get(
-      "http://localhost:3002/api/v1/book/" + bookId
-    );
-    const book = bookRes.data;
-    if (!book) {
-      return res.status(500).json({ error: "Book not found" });
-    }
-    const bookUpdate = await fetch(
-      "http://localhost:3002/api/v1/book/toggleLoaned/" + bookId,
+  if (!mongoose.Types.ObjectId.isValid(bookId)) {
+    const codeRes = await fetch(
+      "http://localhost:3002/api/v1/book/code/" + bookId,
       {
-        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${req.token}`,
         },
       }
     );
-    const updatedBook = await bookUpdate.json();
-    if (!bookUpdate.ok)
-      return res
-        .status(500)
-        .json({ error: `could not toggle loaned : ${updatedBook.error}` });
+    const codeBookId = await codeRes.json();
+    if (!codeBookId) {
+      return res.status(500).json({ error: "Book id not found from code" });
+    }
+    bookId = codeBookId._id;
+  }
 
-    if (failedLoans.length > 1) {
-      const notificationPromises = failedLoans.map(async (failedloan) => {
-        try {
-          const failedLoanRes = await axios.get(
-            "http://localhost:3000/api/v1/client/" + failedloan.clientId
-          );
-          const failedLoan = failedLoanRes.data;
-          if (!failedLoan) {
-            return res.status(500).json({ error: "Failed loan not found" });
-          }
-          if (!failedLoan.email) {
-            return res.status(500).json({
-              error: `Error sending notification: No email found for client ${failedLoan._id}`,
-            });
-          }
+  const failedLoans = await FailedLoans.find({ bookId });
+  const bookRes = await axios.get(
+    "http://localhost:3002/api/v1/book/" + bookId
+  );
+  const book = bookRes.data;
+  if (!book) {
+    return res.status(500).json({ error: "Book not found" });
+  }
+  const bookUpdate = await fetch(
+    "http://localhost:3002/api/v1/book/toggleLoaned/" + bookId,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.token}`,
+      },
+    }
+  );
+  const updatedBook = await bookUpdate.json();
+  if (!bookUpdate.ok)
+    return res
+      .status(500)
+      .json({ error: `could not toggle loaned : ${updatedBook.error}` });
 
-          const emailData = {
-            to: failedLoan.email,
-            subject: " Great news",
-            text: `The book ${book.title} is available again`,
-          };
-
-          await axios.post(
-            "http://localhost:3001/api/v1/sendNotification",
-            emailData
-          );
-        } catch (error) {
-          return res
-            .status(500)
-            .json({ error: `Error sending notification: ${error.message}` });
+  if (failedLoans.length > 1) {
+    const notificationPromises = failedLoans.map(async (failedloan) => {
+      try {
+        const failedLoanRes = await axios.get(
+          "http://localhost:3000/api/v1/client/" + failedloan.clientId
+        );
+        const failedLoan = failedLoanRes.data;
+        if (!failedLoan) {
+          return res.status(500).json({ error: "Failed loan not found" });
         }
-      });
+        if (!failedLoan.email) {
+          return res.status(500).json({
+            error: `Error sending notification: No email found for client ${failedLoan._id}`,
+          });
+        }
 
-      await Promise.all(notificationPromises);
+        const emailData = {
+          to: failedLoan.email,
+          subject: " Great news",
+          text: `The book ${book.title} is available again`,
+        };
 
-      const { deletedCount } = await FailedLoans.deleteMany({ clientId });
-      if (!deletedCount == 0) {
+        await axios.post(
+          "http://localhost:3001/api/v1/sendNotification",
+          emailData
+        );
+      } catch (error) {
         return res
           .status(500)
-          .json({ error: "Could not delete failedLoans for this book" });
+          .json({ error: `Error sending notification: ${error.message}` });
       }
-    }
+    });
 
-    const loan = await Loan.deleteOne({ clientId, bookId });
-    if (!loan.deletedCount == 1) {
-      return res.status(500).json({ error: "Could not delete client Loan" });
-    }
+    await Promise.all(notificationPromises);
 
-    return res.status(200).json({ book: updatedBook });
-  } catch (error) {
-    console.error(`Error returning book: ${error.message}`);
-    return res.status(500).json({ error });
+    const { deletedCount } = await FailedLoans.deleteMany({ clientId });
+    if (!deletedCount == 0) {
+      return res
+        .status(500)
+        .json({ error: "Could not delete failedLoans for this book" });
+    }
   }
+
+  const loan = await Loan.deleteOne({ clientId, bookId });
+  if (!loan.deletedCount == 1) {
+    return res.status(500).json({ error: "Could not delete client Loan" });
+  }
+
+  return res.status(200).json({ book: updatedBook });
 });
 export default router;

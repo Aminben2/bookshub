@@ -40,6 +40,10 @@ const loanSlice = createSlice({
       const id = action.payload;
       state.clientLoans = state.clientLoans.filter((l) => l._id !== id);
     },
+    removeClienrLoanByBookId: (state, action) => {
+      const id = action.payload;
+      state.clientLoans = state.clientLoans.filter((l) => l.bookId !== id);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getClientLoans.pending, (state, action) => {
@@ -55,5 +59,6 @@ const loanSlice = createSlice({
   },
 });
 
-export const { addClientLoan, removeClienrLoan } = loanSlice.actions;
+export const { addClientLoan, removeClienrLoan, removeClienrLoanByBookId } =
+  loanSlice.actions;
 export default loanSlice;

@@ -25,6 +25,17 @@ router.get("/favorites/:id", requireAuth, async (req, res) => {
     return res.status(500).json({ error: "Books not found" });
   }
 });
+
+router.get("/code/:code", requireAuth, async (req, res) => {
+  const { code } = req.params;
+  try {
+    const book = await Book.findOne({ code });
+    return res.status(200).json(book);
+  } catch (error) {
+    return res.status(500).json({ error: "book not found" });
+  }
+});
+
 router.get("/search", async (req, res) => {
   const query = req.query.q;
   try {

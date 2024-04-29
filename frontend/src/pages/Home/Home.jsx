@@ -5,7 +5,7 @@ const Home = () => {
     <div>
       <div className="font-sans text-[#333] max-w-6xl max-md:max-w-md mx-auto my-5 px-8">
         <div className="grid md:grid-cols-2 items-center md:gap-8 gap-6">
-          <div className="max-md:order-1 max-md:text-center z-50 relative">
+          <div className="max-md:order-1 max-md:text-center relative">
             <h2 className="lg:text-6xl md:text-5xl text-3xl font-extrabold mb-4 md:!leading-[56px]">
               <span className="text-blue-600">Enlightened</span> Reading for{" "}
               <span className="text-blue-600">Enlightened</span> Minds

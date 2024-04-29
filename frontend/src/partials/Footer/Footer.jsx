@@ -1,25 +1,81 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 function Footer() {
+  const user = useSelector((s) => s.auth);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    message: "",
+    api: "",
+  });
+  const [msg, setMsg] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const requiredFields = ["name", "email", "message"];
+    const errors = {};
+    requiredFields.forEach((field) => {
+      if (!formData[field]) {
+        errors[field] = "This field is required";
+      }
+    });
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3002/api/v1/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+      // Reset form fields after successful submission
+      setMsg("Your message has been sent to us");
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+        api: "",
+      });
+      setErrors({});
+    } catch (error) {
+      setErrors((pre) => ({ ...pre, api: error.error }));
+    }
+  };
   return (
     <footer className="bg-white py-12 px-12 font-[sans-serif]">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
         <div className="xl:col-span-2">
           <a href="">
-            <img
-              //   src="https://readymadeui.com/readymadeui.svg"
-              src="/images/logo.png"
-              alt="logo"
-              className="w-48"
-            />
+            <img src="/images/logo.png" alt="logo" className="w-48" />
           </a>
           <p className="text-sm mt-6 text-gray-500">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
             gravida, mi eu pulvinar cursus, sem elit interdum mauris dipiscing
-            elit. Aenean gravida, mi eu pulvinar cursus...{" "}
-            <a href="" className="text-sm font-semibold text-blue-500">
+            elit. Aenean gravida, mi eu pulvinar cursus...
+            <span className="text-sm font-semibold text-blue-500">
               Read more
-            </a>
+            </span>
           </p>
           <ul className="mt-10 space-y-6">
             <li className="flex items-center">
@@ -113,29 +169,58 @@ function Footer() {
           <p className="text-sm text-gray-500 mt-2">
             We usually respond before 24 hours.
           </p>
-          <form className="mt-6">
+          {msg && (
+            <p className="text-green-600 mt-4 font-semibold bg-green-100 p-5 rounded">
+              {msg}
+            </p>
+          )}
+          <form id="contact" className="mt-6" onSubmit={handleSubmit}>
             <input
               type="text"
               placeholder="Name"
-              className="w-full rounded-md h-10 px-6 bg-[#f0f1f2] text-sm mb-3 outline-blue-500"
+              className={`w-full rounded-md h-10 px-6 bg-[#f0f1f2] text-sm mb-3 outline-blue-500 ${
+                errors.name ? "border-red-500" : ""
+              }`}
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
             />
+            {errors.name && (
+              <p className="text-red-500 text-xs">{errors.name}</p>
+            )}
             <input
               type="text"
               placeholder="Email"
-              className="w-full rounded-md h-10 px-6 bg-[#f0f1f2] text-sm mb-3 outline-blue-500"
+              className={`w-full rounded-md h-10 px-6 bg-[#f0f1f2] text-sm mb-3 outline-blue-500 ${
+                errors.email ? "border-red-500" : ""
+              }`}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs">{errors.email}</p>
+            )}
             <textarea
               placeholder="Message"
               rows="6"
-              className="w-full rounded-md px-6 bg-[#f0f1f2] text-sm pt-3 outline-blue-500"
+              className={`w-full rounded-md px-6 bg-[#f0f1f2] text-sm pt-3 outline-blue-500 ${
+                errors.message ? "border-red-500" : ""
+              }`}
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
             ></textarea>
+            {errors.message && (
+              <p className="text-red-500 text-xs">{errors.message}</p>
+            )}
+            <button
+              type="submit"
+              className="text-white bg-blue-500 hover:bg-blue-600 font-semibold rounded-md text-sm px-6 py-3 block w-full mt-3"
+            >
+              Submit
+            </button>
           </form>
-          <button
-            type="button"
-            className="text-white bg-blue-500 hover:bg-blue-600 font-semibold rounded-md text-sm px-6 py-3 block w-full mt-3"
-          >
-            Submit
-          </button>
         </div>
         <div>
           <h4 className="text-black font-semibold text-lg">Social Media</h4>

@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const favoriteBookSchema = Schema({
+const favoriteBookSchema = new Schema({
   bookId: {
     type: String,
     required: true,

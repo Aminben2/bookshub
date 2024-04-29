@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const BookSchema = Schema({
+const BookSchema = new Schema({
   code: {
     type: String,
     unique: true,

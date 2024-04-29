@@ -8,6 +8,7 @@ import fs from "fs";
 
 // Routes
 import BookRouter from "./routes/Book.js";
+import ContactRouter from "./routes/Contact.js";
 
 //Configs
 const app = express();
@@ -68,3 +69,4 @@ app.post("/upload", upload.array("files", 10), (req, res) => {
 
 // End points
 app.use("/api/v1/book", BookRouter);
+app.use("/api/v1/contact", ContactRouter);
