@@ -18,6 +18,7 @@ import BookDetails from "./pages/BookDetails/BookDetails";
 import RetrunBook from "./pages/ReturnBook/RetrunBook";
 import LoanBook from "./pages/LoanBook/Loan";
 import Contact from "./pages/Contact/Contact";
+import EmailBox from "./components/EmailBox/EmailBox";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
         <Route path="/loan" element={<LoanBook />} />
         <Route path="/returnBook" element={<RetrunBook />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/notifications" element={<EmailBox />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />

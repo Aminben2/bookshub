@@ -55,7 +55,6 @@ router.get("/search", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const loan = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(400).json({ error: "Book id is not valid" });

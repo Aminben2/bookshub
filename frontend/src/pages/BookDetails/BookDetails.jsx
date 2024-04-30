@@ -25,11 +25,13 @@ function BookDetails() {
   }, [id, dispatch]);
 
   useEffect(() => {
-    dispatch(getFavoriteBooks());
-    const result = favoritesBooks.find((f) => f.bookId === id);
-    if (!favBooksIsloading && result) {
-      setIsFavorite(true);
-      setFavBookId(result._id);
+    if (user) {
+      dispatch(getFavoriteBooks());
+      const result = favoritesBooks.find((f) => f.bookId === id);
+      if (!favBooksIsloading && result) {
+        setIsFavorite(true);
+        setFavBookId(result._id);
+      }
     }
   }, [favoritesBooks, dispatch, id, favBooksIsloading]);
 
@@ -144,7 +146,16 @@ function BookDetails() {
                 className={`absolute top-4 right-4 ${
                   isFavorite && "text-red-500"
                 }`}
-                onClick={isFavorite ? removeFavv : addFav}
+                onClick={
+                  !user
+                    ? (e) => {
+                        e.preventDefault();
+                        navigate("/login");
+                      }
+                    : isFavorite
+                    ? removeFavv
+                    : addFav
+                }
               >
                 {isFavorite ? (
                   <i className="fa-solid fa-heart"></i>
@@ -219,7 +230,10 @@ function BookDetails() {
                 onClick={
                   user && !book.loaned
                     ? () => setShowLoanModal(true)
-                    : (e) => e.preventDefault()
+                    : (e) => {
+                        e.preventDefault();
+                        navigate("/login");
+                      }
                 }
                 disabled={book.loaned}
                 type="button"
@@ -231,7 +245,12 @@ function BookDetails() {
               </button>
               <button
                 onClick={
-                  user ? () => remindeMeLater() : (e) => e.preventDefault()
+                  user
+                    ? () => remindeMeLater()
+                    : (e) => {
+                        e.preventDefault();
+                        navigate("/login");
+                      }
                 }
                 disabled={!book.loaned}
                 type="button"

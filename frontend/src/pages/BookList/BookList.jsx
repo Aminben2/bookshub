@@ -9,6 +9,7 @@ function BookList() {
   useEffect(() => {
     dispatch(getBooks());
   }, []);
+
   return (
     <div className="bg-white font-[sans-serif] my-10 px-7">
       <div className="max-w-7xl mx-auto">

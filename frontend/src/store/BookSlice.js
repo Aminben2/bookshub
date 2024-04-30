@@ -25,12 +25,7 @@ export const getFavoriteBooks = createAsyncThunk(
 export const getBooks = createAsyncThunk("books/getBooks", async () => {
   const user = JSON.parse(localStorage.getItem("login"));
   try {
-    const res = await fetch(url + "/", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    const res = await fetch(url + "/");
     if (!res.ok) throw new Error("Could not fetch data from book service");
     const data = await res.json();
 
@@ -43,12 +38,7 @@ export const getBooks = createAsyncThunk("books/getBooks", async () => {
 export const getBook = createAsyncThunk("books/getBook", async (id) => {
   const user = JSON.parse(localStorage.getItem("login"));
   try {
-    const res = await fetch(url + `/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    const res = await fetch(url + `/${id}`);
     if (!res.ok) throw new Error("Could not fetch the book from book service");
     const data = await res.json();
 

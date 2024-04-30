@@ -4,6 +4,7 @@ import bookSlice from "./BookSlice";
 import clientSlice from "./ClientSlice";
 import themeSlice from "./ModeSlice";
 import loanSlice from "./LoanSlice";
+import notificationsSlice from "./NotificationsSlice";
 const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
@@ -11,6 +12,7 @@ const store = configureStore({
     client: clientSlice.reducer,
     theme: themeSlice.reducer,
     loan: loanSlice.reducer,
+    notification: notificationsSlice.reducer,
   },
 });
 

@@ -14,7 +14,7 @@ const AuthLayout = () => {
     return <Navigate to="/login" />;
   }
   return (
-    <div>
+    <div className="pt-20">
       <Outlet client={client} />
     </div>
   );

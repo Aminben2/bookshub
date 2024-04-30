@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-function Footer() {
+function Footer({ setShowLogin }) {
   const user = useSelector((s) => s.auth);
   const [formData, setFormData] = useState({
     name: "",
@@ -23,6 +23,10 @@ function Footer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+      setShowLogin();
+      return;
+    }
 
     const requiredFields = ["name", "email", "message"];
     const errors = {};

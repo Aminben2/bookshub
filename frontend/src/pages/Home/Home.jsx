@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
-    <div>
+    <div className="pt-32">
       <div className="font-sans text-[#333] max-w-6xl max-md:max-w-md mx-auto my-5 px-8">
         <div className="grid md:grid-cols-2 items-center md:gap-8 gap-6">
           <div className="max-md:order-1 max-md:text-center relative">
@@ -16,12 +17,12 @@ const Home = () => {
               literature, each page a gateway to new worlds and endless
               possibilities
             </p>
-            <button
-              type="button"
-              className="bg-blue-600 hover:bg-transparent hover:text-blue-600 border-2 border-blue-600 mt-10 transition-all text-white font-bold text-sm rounded-md px-6 py-2.5"
+            <Link
+              to="/books"
+              className="block w-fit bg-blue-600 hover:bg-transparent hover:text-blue-600 border-2 border-blue-600 mt-10 transition-all text-white font-bold text-sm rounded-md px-6 py-2.5"
             >
               Get Started
-            </button>
+            </Link>
             <div className="mt-10">
               <div className="grid sm:grid-cols-3 gap-4 items-center">
                 <div className="flex flex-col items-center text-center">

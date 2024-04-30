@@ -1,9 +1,8 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 
 function BookLayout() {
   return (
-    <div>
+    <div className="pt-32">
       <Outlet />
     </div>
   );

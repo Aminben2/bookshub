@@ -128,7 +128,7 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
       .status(500)
       .json({ error: `could not toggle loaned : ${updatedBook.error}` });
 
-  if (failedLoans.length > 1) {
+  if (failedLoans.length > 0) {
     const notificationPromises = failedLoans.map(async (failedloan) => {
       try {
         const failedLoanRes = await axios.get(
@@ -163,12 +163,7 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
 
     await Promise.all(notificationPromises);
 
-    const { deletedCount } = await FailedLoans.deleteMany({ clientId });
-    if (!deletedCount == 0) {
-      return res
-        .status(500)
-        .json({ error: "Could not delete failedLoans for this book" });
-    }
+    const { deletedCount } = await FailedLoans.deleteMany({ bookId });
   }
 
   const loan = await Loan.deleteOne({ clientId, bookId });

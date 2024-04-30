@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoanModal from "./LoanModal";
+import { useSelector } from "react-redux";
 
-function Book({ _id, code, title, description, author, cover }) {
+function Book({ _id, title, author, cover }) {
   const [showLoanModal, setShowLoanModal] = useState(false);
-
+  const user = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  
   return (
     <div className="bg-white cursor-pointer rounded overflow-hidden shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] relative group">
       {showLoanModal && (
@@ -28,10 +31,17 @@ function Book({ _id, code, title, description, author, cover }) {
         <div className="flex flex-col gap-4 h-0 overflow-hidden group-hover:h-fit group-hover:mt-4 transition-all duration-300">
           <div className="flex flex-row  items-center gap-2">
             <button
-              onClick={() => {
-                document.body.style.overflow = "hidden";
-                setShowLoanModal(true);
-              }}
+              onClick={
+                user
+                  ? () => {
+                      document.body.style.overflow = "hidden";
+                      setShowLoanModal(true);
+                    }
+                  : (e) => {
+                      e.preventDefault();
+                      navigate("/login");
+                    }
+              }
               className="px-6 py-2.5 rounded text-white text-sm tracking-wider font-semibold 
                     border-2 border-blue-600 outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600"
             >

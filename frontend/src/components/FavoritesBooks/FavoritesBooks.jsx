@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getFavoriteBooks } from "../../store/BookSlice";
 import OneFavoriteBook from "./OneFavoriteBook";
 
-function FavoritesBooks({ show, setShow }) {
+function FavoritesBooks({ show, setShow}) {
   const { favoritesBooks } = useSelector((state) => state.book);
   const [isMounted, setIsMounted] = useState(false);
   const dispatch = useDispatch();
