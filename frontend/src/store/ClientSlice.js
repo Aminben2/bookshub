@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-const url = "http://localhost:3000/api/v1/client";
+const url = "http://localhost:3001/api/v1/client";
 
 export const getClient = createAsyncThunk("clients/getClient", async () => {
   const user = JSON.parse(localStorage.getItem("login"));

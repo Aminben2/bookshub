@@ -11,8 +11,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-const port = process.env.PORT;
-const url_db = process.env.DB_URL;
+const port = process.env.PORT || 3003;
+const url_db = process.env.DB_URL || "mongodb://notification_db:27017/noti_db";
 
 connect(url_db)
   .then(() => {

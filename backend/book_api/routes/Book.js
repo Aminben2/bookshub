@@ -88,7 +88,7 @@ router.post("/", requireAuth, async (req, res) => {
   try {
     const book = await Book.create(newBook);
     const clientsResponse = await axios.get(
-      "http://127.0.0.1:3000/api/v1/client"
+      "http://client_service:3001/api/v1/client"
     );
     const clients = clientsResponse.data;
 
@@ -101,7 +101,7 @@ router.post("/", requireAuth, async (req, res) => {
 
       try {
         await axios.post(
-          "http://localhost:3001/api/v1/sendNotification",
+          "http://notification_service:3003/api/v1/sendNotification",
           emailData
         );
         console.log(`Notification sent to ${clt.email}`);

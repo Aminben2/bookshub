@@ -1,4 +1,3 @@
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAllNotifications,
@@ -6,6 +5,7 @@ import {
 } from "../../store/NotificationsSlice";
 import OneNotif from "./OneNotif";
 import InfoAlert from "../Alerts/InfoAlert";
+import { Link } from "react-router-dom";
 
 const NotificationList = ({ show, setShow }) => {
   const { notifications, isLoanding } = useSelector(
@@ -16,7 +16,7 @@ const NotificationList = ({ show, setShow }) => {
 
   const clearAll = async () => {
     const res = await fetch(
-      "http://localhost:3001/api/v1/sendNotification/all",
+      "http://localhost:3003/api/v1/sendNotification/all",
       {
         method: "DELETE",
         headers: {
@@ -36,7 +36,7 @@ const NotificationList = ({ show, setShow }) => {
 
   const markSeenAll = async () => {
     const res = await fetch(
-      "http://localhost:3001/api/v1/sendNotification/seen/all",
+      "http://localhost:3003/api/v1/sendNotification/seen/all",
       {
         method: "PUT",
         headers: {
@@ -107,9 +107,12 @@ const NotificationList = ({ show, setShow }) => {
             <InfoAlert msg={"No notifications"} />
           </ul>
         )}
-        <p className="text-sm px-4 mt-6 mb-4 inline-block text-blue-500 cursor-pointer">
+        <Link
+          to="/notifications"
+          className="text-sm px-4 mt-6 mb-4 inline-block text-blue-500 cursor-pointer"
+        >
           View all Notifications
-        </p>
+        </Link>
       </div>
     </div>
   );

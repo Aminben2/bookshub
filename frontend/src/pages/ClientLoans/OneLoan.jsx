@@ -14,7 +14,7 @@ function OneLoan({ _id, bookId, returnDate, setError }) {
 
   const handleReturnBook = async () => {
     const res = await fetch(
-      `http://localhost:3004/api/v1/loan/returnbook/${bookId}/${user._id}`,
+      `http://localhost:3002/api/v1/loan/returnbook/${bookId}/${user._id}`,
       {
         method: "POST",
         headers: {

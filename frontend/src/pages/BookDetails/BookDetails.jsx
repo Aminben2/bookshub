@@ -47,7 +47,7 @@ function BookDetails() {
       title: book.title,
       cover: book.cover,
     };
-    const res = await fetch("http://localhost:3002/api/v1/book/addFav", {
+    const res = await fetch("http://localhost:3000/api/v1/book/addFav", {
       method: "POST",
       body: JSON.stringify(fav),
       headers: {
@@ -74,7 +74,7 @@ function BookDetails() {
   };
   const removeFavv = async () => {
     const res = await fetch(
-      `http://localhost:3002/api/v1/book/removeFav/${favBookId}`,
+      `http://localhost:3000/api/v1/book/removeFav/${favBookId}`,
       {
         method: "DELETE",
         headers: {
@@ -91,7 +91,7 @@ function BookDetails() {
     }
   };
   const remindeMeLater = async () => {
-    const res = await fetch("http://localhost:3004/api/v1/loan/remindeMe", {
+    const res = await fetch("http://localhost:3002/api/v1/loan/remindeMe", {
       method: "POST",
       body: JSON.stringify({ clientId: user._id, bookId: book._id }),
       headers: {

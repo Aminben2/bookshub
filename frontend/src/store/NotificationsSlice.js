@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-const url = "http://localhost:3001/api/v1/sendNotification";
+const url = "http://localhost:3003/api/v1/sendNotification";
 
 export const getNotifications = createAsyncThunk(
   "notifications/getNotifications",

@@ -14,7 +14,7 @@ function OneEmial({ _id, from, subject, message, timestamp }) {
       return;
     }
     const res = await fetch(
-      "http://localhost:3001/api/v1/sendNotification/" + _id,
+      "http://localhost:3003/api/v1/sendNotification/" + _id,
       {
         method: "DELETE",
         headers: {

@@ -11,7 +11,7 @@ const requireAuth = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/v1/client/validate-token",
+      "http://client_service:3001/api/v1/client/validate-token",
       { token }
     );
     if (response.data.valid) {

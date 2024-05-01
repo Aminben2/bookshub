@@ -9,14 +9,18 @@ dotenv.config();
 const router = Router();
 
 router.get("/", requireAuth, async (req, res) => {
-  const notifs = await Notification.find({ to: req.client.email });
+  try {
+    const notifs = await Notification.find({ to: req.client.email });
 
-  if (notifs.length == 0)
-    return res
-      .status(500)
-      .json({ error: "could not find client notifications" });
+    // if (notifs.length == 0)
+    //   return res
+    //     .status(500)
+    //     .json({ error: "could not find client notifications" });
 
-  return res.status(200).json(notifs);
+    return res.status(200).json(notifs);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 router.post("/", async (req, res) => {

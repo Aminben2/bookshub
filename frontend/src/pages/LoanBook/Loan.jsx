@@ -29,7 +29,7 @@ function LoanBook() {
     };
 
     try {
-      const res = await fetch("http://localhost:3004/api/v1/loan/addLoan", {
+      const res = await fetch("http://localhost:3002/api/v1/loan/addLoan", {
         method: "POST",
         body: JSON.stringify(loan),
         headers: {
@@ -64,7 +64,7 @@ function LoanBook() {
   const fetchBookSuggestions = async (query) => {
     try {
       const response = await fetch(
-        `http://localhost:3002/api/v1/book/search?q=${query}`
+        `http://localhost:3000/api/v1/book/search?q=${query}`
       );
       const data = await response.json();
       setSuggestions(data.books); // Assuming data format includes an array of books

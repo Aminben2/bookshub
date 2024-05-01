@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-const url = "http://localhost:3004/api/v1/loan";
+const url = "http://localhost:3002/api/v1/loan";
 
 export const getClientLoans = createAsyncThunk(
   "loans/getClientLoans",

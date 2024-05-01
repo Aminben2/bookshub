@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-const url = "http://localhost:3002/api/v1/book";
+const url = "http://localhost:3000/api/v1/book";
 
 export const getFavoriteBooks = createAsyncThunk(
   "books/getFavoriteBooks",

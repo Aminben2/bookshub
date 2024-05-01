@@ -9,7 +9,7 @@ function OneFavoriteBook(props) {
 
   const removeFavv = async () => {
     const res = await fetch(
-      `http://localhost:3002/api/v1/book/removeFav/${props._id}`,
+      `http://localhost:3000/api/v1/book/removeFav/${props._id}`,
       {
         method: "DELETE",
         headers: {

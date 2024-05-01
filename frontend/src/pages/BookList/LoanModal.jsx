@@ -26,7 +26,7 @@ function LoanModal({ show, setShow, bookId }) {
       bookId,
     };
 
-    const res = await fetch("http://localhost:3004/api/v1/loan/addLoan", {
+    const res = await fetch("http://localhost:3002/api/v1/loan/addLoan", {
       method: "POST",
       body: JSON.stringify(loan),
       headers: {

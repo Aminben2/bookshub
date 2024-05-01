@@ -39,7 +39,7 @@ function Login() {
     setLoading(true);
     setMsg(null);
 
-    const response = await fetch("http://localhost:3000/api/v1/client/login", {
+    const response = await fetch("http://localhost:3001/api/v1/client/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(loginData),
@@ -66,7 +66,7 @@ function Login() {
 
   const mode = useSelector((state) => state.theme);
   return (
-    <div className="font-[sans-serif] text-[#333] bg-white flex items-center justify-center md:h-screen p-4">
+    <div className="mt-28 font-[sans-serif] text-[#333] bg-white flex items-center justify-center md:h-screen p-4">
       <div className="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl rounded-md p-6">
         <a href="">
           <img

@@ -10,7 +10,7 @@ import { getFavoriteBooks } from "../../store/BookSlice";
 import NotificationList from "../../components/Notifications/Notifications";
 import { getNotifications } from "../../store/NotificationsSlice";
 
-function Header({ user, isDarkMOde, setShowLogin }) {
+function Header({ isDarkMOde, setShowLogin }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showLoansModal, setShowLoansModal] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
@@ -21,17 +21,21 @@ function Header({ user, isDarkMOde, setShowLogin }) {
   const { clientLoans } = useSelector((state) => state.loan);
   const { favoritesBooks } = useSelector((state) => state.book);
   const { notifications } = useSelector((state) => state.notification);
+  const user = useSelector((state) => state.auth);
 
   useEffect(() => {
+    if (!user) return;
     dispatch(getClientLoans());
     dispatch(getFavoriteBooks());
     dispatch(getNotifications());
   }, [dispatch]);
 
   useEffect(() => {
+    if (!user) return;
     const fetchNotifications = async () => {
       dispatch(getNotifications());
     };
+
     fetchNotifications();
     const intervalId = setInterval(fetchNotifications, 5000);
     return () => clearInterval(intervalId);
@@ -139,7 +143,8 @@ function Header({ user, isDarkMOde, setShowLogin }) {
             </li>
             <li className="max-lg:border-b max-lg:py-3">
               <NavLink
-                to="/loan"
+                // to="/loan"
+                to={user ? "/loan" : "/login"}
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
               >
                 Loan
@@ -147,7 +152,8 @@ function Header({ user, isDarkMOde, setShowLogin }) {
             </li>
             <li className="max-lg:border-b max-lg:py-3">
               <NavLink
-                to="/returnBook"
+                to={user ? "/returnBook" : "/login"}
+                // to="/returnBook"
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
               >
                 Return Book
@@ -155,7 +161,8 @@ function Header({ user, isDarkMOde, setShowLogin }) {
             </li>
             <li className="max-lg:border-b max-lg:py-3">
               <NavLink
-                to="/contact"
+                to={user ? "/contact" : "/login"}
+                // to="/contact"
                 className="hover:text-[#007bff] text-gray-600 font-bold text-[15px] block"
               >
                 Contact

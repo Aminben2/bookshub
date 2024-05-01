@@ -15,7 +15,7 @@ function ReturnForm() {
 
   const getBookId = async (bookCode) => {
     const res = await fetch(
-      `http://localhost:3002/api/v1/book/code/${bookId}`,
+      `http://localhost:3000/api/v1/book/code/${bookId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -35,7 +35,7 @@ function ReturnForm() {
       return;
     }
     const res = await fetch(
-      `http://localhost:3004/api/v1/loan/returnbook/${bookId}/${user._id}`,
+      `http://localhost:3002/api/v1/loan/returnbook/${bookId}/${user._id}`,
       {
         method: "POST",
         headers: {

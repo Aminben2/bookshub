@@ -14,7 +14,7 @@ function OneNotif({ _id, from, subject, timestamp, seen }) {
   const markSeen = async () => {
     if (seen) return;
     const res = await fetch(
-      "http://localhost:3001/api/v1/sendNotification/seen/" + _id,
+      "http://localhost:3003/api/v1/sendNotification/seen/" + _id,
       {
         method: "PUT",
         headers: {

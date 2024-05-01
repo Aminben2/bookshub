@@ -43,7 +43,7 @@ function Signup() {
 
     if (formData.password === formData.confirm) {
       const response = await fetch(
-        "http://localhost:3000/api/v1/client/signup",
+        "http://localhost:3001/api/v1/client/signup",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ function Signup() {
     setType((preTYpe) => !preTYpe);
   };
   return (
-    <div className="bg-gray-200 flex items-center justify-center p-10">
+    <div className="mt-28 bg-gray-200 flex items-center justify-center p-10">
       <div className="font-[sans-serif] text-[#333] bg-white">
         <div className="min-h-screen flex fle-col items-center justify-center p-6">
           <div className="grid md:grid-cols-2 items-center gap-6 max-w-7xl w-full">

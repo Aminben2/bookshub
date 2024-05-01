@@ -43,7 +43,7 @@ router.post("/addloan", requireAuth, async (req, res) => {
       .json({ error: "Book is already loaned wait for updates" });
   }
 
-  const bookRes = await fetch("http://localhost:3002/api/v1/book/" + bookId);
+  const bookRes = await fetch("http://book_service:3000/api/v1/book/" + bookId);
   if (!bookRes.ok)
     return res
       .status(500)
@@ -52,7 +52,7 @@ router.post("/addloan", requireAuth, async (req, res) => {
   if (!book) res.status(500).json({ error: "Book not found" });
 
   const clientRes = await fetch(
-    "http://localhost:3000/api/v1/client/" + clientId
+    "http://client_service:3001/api/v1/client/" + clientId
   );
   if (!clientRes.ok)
     return res
@@ -62,7 +62,7 @@ router.post("/addloan", requireAuth, async (req, res) => {
   if (!client) res.status(500).json({ error: "Client not found" });
 
   const bookUpdate = await fetch(
-    "http://localhost:3002/api/v1/book/toggleLoaned/" + bookId,
+    "http://book_service:3000/api/v1/book/toggleLoaned/" + bookId,
     {
       method: "PUT",
       headers: {
@@ -89,7 +89,7 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
     const codeRes = await fetch(
-      "http://localhost:3002/api/v1/book/code/" + bookId,
+      "http://book_service:3000/api/v1/book/code/" + bookId,
       {
         headers: {
           "Content-Type": "application/json",
@@ -106,14 +106,14 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
 
   const failedLoans = await FailedLoans.find({ bookId });
   const bookRes = await axios.get(
-    "http://localhost:3002/api/v1/book/" + bookId
+    "http://book_service:3000/api/v1/book/" + bookId
   );
   const book = bookRes.data;
   if (!book) {
     return res.status(500).json({ error: "Book not found" });
   }
   const bookUpdate = await fetch(
-    "http://localhost:3002/api/v1/book/toggleLoaned/" + bookId,
+    "http://book_service:3000/api/v1/book/toggleLoaned/" + bookId,
     {
       method: "PUT",
       headers: {
@@ -132,7 +132,7 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
     const notificationPromises = failedLoans.map(async (failedloan) => {
       try {
         const failedLoanRes = await axios.get(
-          "http://localhost:3000/api/v1/client/" + failedloan.clientId
+          "http://client_service:3001/api/v1/client/" + failedloan.clientId
         );
         const failedLoan = failedLoanRes.data;
         if (!failedLoan) {
@@ -151,7 +151,7 @@ router.post("/returnbook/:bookId/:clientId", requireAuth, async (req, res) => {
         };
 
         await axios.post(
-          "http://localhost:3001/api/v1/sendNotification",
+          "http://notification_service:3003/api/v1/sendNotification",
           emailData
         );
       } catch (error) {

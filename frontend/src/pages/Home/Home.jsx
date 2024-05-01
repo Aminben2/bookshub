@@ -48,7 +48,7 @@ const Home = () => {
             />
           </div>
         </div>
-        <div className="grid md:grid-cols-3 gap-4 z-50 relative md:px-4 max-md:mt-10">
+        <div className="grid md:grid-cols-3 gap-4 z-50 md:px-4 max-md:mt-10">
           <div className="bg-white p-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
