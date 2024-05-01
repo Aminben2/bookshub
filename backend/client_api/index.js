@@ -6,7 +6,7 @@ import routerClient from "./routes/client.js";
 import requireAuth from "./middleware/requireAuth.js";
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 const url = process.env.URL_MONGOOSE;
 const app = express();
 

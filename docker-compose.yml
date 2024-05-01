@@ -3,7 +3,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "4173:4173"
+      - "5173:5173"
     depends_on:
       - client_service
       - book_service
@@ -19,12 +19,14 @@ services:
   client_service:
     build: ./backend/client_api
     ports:
-      - "3000:3000"
+      - 3001:3001
     depends_on:
       - client_db
       - rabbitMQ
   client_db:
     image: mongo
+    ports:
+      - 30000:27017
     environment:
       MONGO_INITDB_DATABASE: client
     volumes:
@@ -33,12 +35,14 @@ services:
   book_service:
     build: ./backend/book_api
     ports:
-      - "3002:3000"
+      - "3000:3000"
     depends_on:
       - book_db
       - rabbitMQ
   book_db:
     image: mongo
+    ports:
+      - 30001:27017
     environment:
       MONGO_INITDB_DATABASE: book
     volumes:
@@ -47,12 +51,14 @@ services:
   loan_service:
     build: ./backend/loan_api
     ports:
-      - 3004:3000
+      - 3002:3002
     depends_on:
       - loan_db
       - rabbitMQ
   loan_db:
     image: mongo
+    ports:
+      - 30002:27017
     environment:
       MONGO_INITDB_DATABASE: loan
     volumes:
@@ -61,12 +67,14 @@ services:
   notification_service:
     build: ./backend/notification_api
     ports:
-      - 3001:3000
+      - 3003:3003
     depends_on:
       - notification_db
       - rabbitMQ
   notification_db:
     image: mongo
+    ports:
+      - 30003:27017
     environment:
       MONGO_INITDB_DATABASE: notification
     volumes:
@@ -75,9 +83,9 @@ services:
   gateway:
     image: nginx
     volumes:
-      - ./gateway/default.conf:/etc/nginx/conf.d/default.conf 
+      - ./gataway/default.conf:/etc/nginx/conf.d/default.conf 
     ports:
-      - "80:80" 
+      - "8080:80" 
 volumes:
   frontend_data:
   client_data:

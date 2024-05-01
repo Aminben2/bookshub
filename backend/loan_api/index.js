@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 dotenv.config();
 
-const port = process.env.PORT || 3004;
+const port = process.env.PORT;
 const url_db = process.env.DB_URL;
 
 connect(url_db)

@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 dotenv.config();
 
-const port = process.env.PORT || 3002;
+const port = process.env.PORT ;
 const url_db = process.env.URL_MONGOOSE;
 
 connect(url_db)
