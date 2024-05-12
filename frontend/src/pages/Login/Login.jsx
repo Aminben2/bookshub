@@ -78,7 +78,7 @@ function Login() {
         <div className="grid md:grid-cols-2 items-center gap-8">
           <div className="max-md:order-1">
             <img
-              src="./images/login-image.webp"
+              src="./images/login.webp"
               className="lg:w-11/12 w-full object-cover"
               alt="login-image"
             />

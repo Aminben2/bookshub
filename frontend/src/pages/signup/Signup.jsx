@@ -229,7 +229,7 @@ function Signup() {
             </form>
             <div className="h-full max-md:mt-10">
               <img
-                src="./images/signup-image.webp"
+                src="./images/signup.webp"
                 className="w-full h-full object-cover"
                 alt="Dining Experience"
               />
